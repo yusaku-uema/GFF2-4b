@@ -1,6 +1,7 @@
 #include"DxLib.h"
 #include"character.h"
-#include"main.h"
+
+
 
 Character::Character() {
 	x = 0;

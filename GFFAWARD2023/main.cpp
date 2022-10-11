@@ -1,8 +1,10 @@
 #include "DxLib.h"
 #include"main.h"
+#include"character.h"
 
 int CharacterImages[16]; //少年のイメージ画像
 int background1; //背景画像
+int blockImages; //ブロック画像
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     // タイトル
@@ -33,6 +35,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 int LoadImages(void) { //画像読込み
 	if (LoadDivGraph("images/player/player.png", 16, 4, 4, 70, 90,CharacterImages) == 1)return -1; //少年仮
 	if((background1 = LoadGraph("images/background/street003_day.png")) == -1)return -1;// 背景
+	if ((blockImages = LoadGraph("images/block/0115_s1.png")) == -1)return -1; //ブロック
+	
 }
 
 int GetArrayImages(int type, int num) { //type,使いたい画像の要素数を指定することで、指定した画像が使える

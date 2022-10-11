@@ -78,6 +78,6 @@ private:
     int MapNo;
 public:
     Map();
-
+    void GraphDraw(int ScrollX, int ScrollY); // ƒ}ƒbƒv•`‰æŠÖ”
     ~Map();
 };
