@@ -180,21 +180,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     int Key;
     int ScrollX, ScrollY;
 
-    SetGraphMode(640, 480, 16);
-    if (DxLib_Init() == -1)    // ＤＸライブラリ初期化処理
-    {
-        return -1;             // エラーが起きたら直ちに終了
-    }
 
-    // 描画先画面を裏画面にする
-    SetDrawScreen(DX_SCREEN_BACK);
 
-    // プレイヤーの初期位置をセット
-    PlayerX = 1;
-    PlayerY = 1;
-
-    // 最初は停止中(0)にしておく
-    Move = 0;
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    // タイトル
+    SetMainWindowText("プロトタイプ版"); //ゲームタイトル
+	SetOutApplicationLogValidFlag(FALSE);   //ログ出力を無効にする
+	ChangeWindowMode(TRUE);// ウィンドウモードで起動
+	SetGraphMode(1280, 720, 0); //画面サイズ
+	//SetWindowSize(1280, 720); 
+    if (DxLib_Init() == -1) return -1;	// DXライブラリの初期化処理
+	if (LoadImages() == -1)return -1; //画像読込み
+	
+	SetDrawScreen(DX_SCREEN_BACK);// 描画先画面を裏にする
+    // ゲームループ
+	while (ProcessMessage() == 0 && g_GameState != 99) {
+        ClearDrawScreen();		// 画面の初期化
 
     // ループ
     while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
