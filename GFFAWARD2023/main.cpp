@@ -3,9 +3,6 @@
 
 int CharacterImages[16]; //少年のイメージ画像
 int background1; //背景画像
-int  g_GameState = 0;
-
-
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     // タイトル
@@ -13,13 +10,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetOutApplicationLogValidFlag(FALSE);   //ログ出力を無効にする
 	ChangeWindowMode(TRUE);// ウィンドウモードで起動
 	SetGraphMode(1280, 720, 0); //画面サイズ
-	//SetWindowSize(1280, 720); 
     if (DxLib_Init() == -1) return -1;	// DXライブラリの初期化処理
 	if (LoadImages() == -1)return -1; //画像読込み
 	
-	SetDrawScreen(DX_SCREEN_BACK);// 描画先画面を裏にする
+	SetDrawScreen(DX_SCREEN_BACK); // 描画先画面を裏にする
     // ゲームループ
-	while (ProcessMessage() == 0 && g_GameState != 99) {
+	while (ProcessMessage() == 0) {
         ClearDrawScreen();		// 画面の初期化
 
 		DrawGraph(0, 100, background1, FALSE); //背景反映
