@@ -152,11 +152,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="character.cpp" />
+    <ClCompile Include="cursor.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="map.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h" />
+    <ClInclude Include="cursor.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="map.h" />
   </ItemGroup>
