@@ -45,6 +45,7 @@ int g_jump_angle = 10;
 
 int g_playerx_radius = 30 / 2;
 int g_playery_radius = 60 / 2;
+int g_EnemyImage[6];
 
 unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -82,6 +83,7 @@ void Enemy(void); //敵
 void Sousa(void); // 操作
 void Jump(void); //ジャンプ
 void Walk(void);
+void Enemy(void); //敵
 
 /***********************************************
  * プログラム開始
@@ -118,6 +120,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         Stage();
         Player();
         Sousa();
+        Enemy();
 
         ScreenFlip();         //裏画面の内容を表画面に反映
     }
@@ -334,6 +337,11 @@ void Jump(void)
     //g_enemyy = (sin(g_enemy_angle * M_PI / 180) * g_enemy_radius) + g_centery;
 }
 
+void Enemy(void) {
+    static int x, y;
+    DrawGraph(30 * x, 30 * y, g_EnemyImage[1], TRUE);
+}
+
 /***********************************************
 * 画像読み込み
 ***********************************************/
@@ -343,6 +351,7 @@ int LoadImages()
     if ((g_cursor_image = LoadGraph("images/cursor .png")) == -1) return -1;
     if (LoadDivGraph("images/block/stage3.png", 5, 5, 1, 30, 30, g_block_image) == -1) return -1;
     if (LoadDivGraph("images/player/human.png", 4, 4, 1, 30, 60, g_player_image) == -1) return -1;
+    if (LoadDivGraph("images/hone.png", 6, 3, 2, 48, 60, g_EnemyImage) == -1) return -1;
 }
 
 
