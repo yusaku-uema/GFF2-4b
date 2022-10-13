@@ -339,7 +339,7 @@ void Jump(void)
 
 void Enemy(void) {
     static int x, y;
-    DrawGraph(30 * x, 30 * y, g_EnemyImage[1], TRUE);
+    //DrawGraph(30 * x, 30 * y, g_EnemyImage[1], TRUE);
 }
 
 /***********************************************
