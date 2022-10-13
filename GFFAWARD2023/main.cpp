@@ -1,269 +1,349 @@
+
 #include"DxLib.h"
-#include"main.h"
-#include"character.h"
-#include"map.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
+#include"stdlib.h"
 
-#define MAP_NUM 1 //マップの数
+#define MAP_HIGHT 20
+#define MAP_WIDTH 20
 
-#define MAP_SIZE 32 //マップチップーつのドット
+/***********************************************
+ * 変数
+ ***********************************************/
 
-#define MAP_WIDTH_MAX 40 //マップの最大横幅
-#define MAP_HEIGHT_MAX 40 //マップの最大縦長さ
+int g_block_image[5];
+int g_player_image[4];
+int g_cursor_image;
 
-#define MOVE_FRAME 15 //移動にかけるフレーム数
+int g_cursorx = 0;
+int g_cursory = 0;
+int g_cursor_speed = 0;
+int g_old_key;
+int g_now_key;
 
-int CharacterImages[16]; //少年のイメージ画像
-int background1; //背景画像
-int blockImages; //ブロック画像
-int MapNo; //マップの数
-int Key; //キー入力
-int ScrollX, ScrollY;
-int MoveX, MoveY;
-int Move;
-int PlayerY, PlayerX;
-int MoveCounter;
+bool g_AKey = FALSE;
+bool g_hanten = false;
+int g_playerx = 2 * 30;
+int g_playery = 7 * 30;
+int g_player_hight = 60;
+int g_player_width = 30;
 
-Character character;
+int g_player_angle = 0;
 
-#define MAP_NUM 1 //マップの数
+int g_player_image_type = 0;
+int g_image_time = 0;
 
-#define MAP_SIZE 32 //マップチップーつのドット
+int g_jump_startx;
+int g_jump_starty;
 
-#define MAP_WIDTH_MAX 40 //マップの最大横幅
-#define MAP_HEIGHT_MAX 40 //マップの最大縦長さ
+int g_jump = 0;
+int g_jumpy;
+int g_jump_radius = 16;
+int g_jump_centerx;
+int g_jump_centery;
+int g_jump_angle = 10;
 
-#define MOVE_FRAME 15 //移動にかけるフレーム数
+int g_playerx_radius = 30 / 2;
+int g_playery_radius = 60 / 2;
 
-void GraphDraw(int ScrollX, int ScrollY);
-
-
-// マップの構造体
-struct MAPDATA
-{
-    // マップの幅
-    int Width;
-
-    // マップの高さ
-    int Height;
-
-    // マップ
-    int Data[MAP_HEIGHT_MAX][MAP_WIDTH_MAX];
+unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0},
+        {4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,4},
+        {4,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,1,0,0,4},
+        {4,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,4},
+        {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
+        {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
 };
+unsigned int PLAYER_MAP[MAP_HIGHT][MAP_WIDTH];
+unsigned int MAP_DATA[MAP_HIGHT][MAP_WIDTH];
 
-// マップのデータ
-MAPDATA MapData[MAP_NUM] =
+/***********************************************
+ * 関数プロトタイプ宣言
+ ***********************************************/
+int LoadImages();  //画像読み込み
+void Player();  //自機操作
+void Stage();  //ステージ
+void Sky(void); //空
+void Enemy(void); //敵
+void Sousa(void); // 操作
+void Jump(void); //ジャンプ
+void Walk(void);
+
+/***********************************************
+ * プログラム開始
+ ***********************************************/
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    // マップ０
+    SetMainWindowText("ゲーム");  //タイトルを設定
+
+    SetGraphMode(600, 600, 16);
+    ChangeWindowMode(TRUE);		               // ウィンドウモードで起動
+
+    if (DxLib_Init() == -1) return -1;	   // DXライブラリの初期化処理
+
+    SetDrawScreen(DX_SCREEN_BACK);	           // 描画先画面を裏にする
+
+    if (LoadImages() == -1) return -1;  //画像読み込み関数を呼び出し
+
+    for (int i = 0; i < MAP_HIGHT; i++)
     {
-        40,
-        32,
+        for (int j = 0; j < MAP_WIDTH; j++)
         {
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ,
-            { 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 ,  0, 1, 1, 1, 1, 1, 1, 0, 0, 0 ,  1, 1, 1, 1, 1, 1, 1, 0, 0, 0 ,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ,
-            { 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 ,  0, 1, 1, 1, 1, 1, 1, 0, 0, 0 ,  1, 0, 0, 0, 1, 1, 1, 0, 0, 0 ,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ,
-            { 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 ,  0, 1, 1, 1, 1, 1, 1, 0, 0, 0 ,  1, 0, 0, 0, 1, 1, 1, 0, 0, 0 ,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ,
-            { 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 ,  0, 1, 1, 1, 1, 1, 1, 0, 0, 0 ,  1, 0, 0, 0, 1, 1, 1, 1, 1, 1 ,  1, 1, 1, 1, 1, 1, 1, 1, 0, 0 } ,
-            { 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 ,  0, 1, 1, 1, 1, 1, 1, 0, 0, 0 ,  1, 0, 0, 0, 1, 1, 1, 0, 0, 0 ,  0, 0, 0, 1, 0, 0, 0, 1, 0, 0 } ,
-            { 0, 0, 1, 1, 0, 0, 0, 0, 0, 0 ,  0, 1, 1, 1, 1, 1, 1, 1, 1, 1 ,  1, 0, 0, 0, 1, 1, 1, 0, 0, 0 ,  1, 1, 1, 1, 0, 0, 0, 1, 0, 0 } ,
-            { 0, 0, 1, 1, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 1, 0, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 0, 0 ,  1, 0, 0, 0, 0, 1, 1, 1, 0, 0 } ,
-
-            { 0, 0, 1, 1, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 1, 0, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 0, 0 ,  1, 0, 1, 0, 1, 1, 0, 0, 0, 0 } ,
-            { 0, 1, 1, 1, 1, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 1, 0, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 0, 0 ,  1, 0, 1, 0, 1, 0, 0, 1, 1, 0 } ,
-            { 0, 1, 1, 1, 1, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 1, 0, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 0, 0 ,  1, 0, 1, 0, 1, 0, 1, 1, 0, 0 } ,
-            { 0, 1, 1, 1, 1, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 1, 1, 1, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 0, 0 ,  1, 0, 1, 0, 1, 1, 1, 0, 0, 0 } ,
-            { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 1, 1, 1, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 0, 0 ,  1, 1, 1, 0, 1, 0, 0, 1, 1, 0 } ,
-            { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 1, 1, 1, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 0, 0 ,  0, 0, 0, 0, 1, 0, 0, 1, 1, 0 } ,
-            { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 0, 1 ,  1, 1, 1, 1, 1, 0, 0, 1, 1, 0 } ,
-            { 0, 0, 1, 1, 1, 1, 1, 1, 1, 1 ,  1, 1, 1, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 0, 1 ,  0, 0, 0, 1, 0, 1, 1, 1, 1, 0 } ,
-
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 1, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 0, 1 ,  1, 1, 0, 1, 0, 1, 0, 0, 0, 0 } ,
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 1, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 0, 1 ,  1, 1, 0, 1, 0, 1, 0, 1, 1, 0 } ,
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 1, 1, 1, 1, 1, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 0, 0 ,  0, 1, 0, 1, 1, 1, 0, 1, 1, 0 } ,
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 1, 0, 0, 0, 1, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 1, 1 ,  1, 1, 0, 0, 0, 0, 1, 1, 1, 0 } ,
-            { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 ,  1, 1, 1, 0, 0, 0, 1, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 1, 0 ,  0, 0, 0, 0, 0, 1, 1, 0, 1, 0 } ,
-            { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 0, 1, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 1, 1 ,  1, 1, 1, 1, 1, 1, 0, 0, 1, 0 } ,
-            { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 1, 1, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 1, 0 ,  0, 0, 0, 0, 0, 0, 0, 0, 1, 0 } ,
-            { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 1, 0, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 1, 1 ,  1, 1, 1, 1, 1, 1, 1, 0, 1, 0 } ,
-
-            { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 1, 0, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 0, 0 ,  0, 0, 0, 0, 0, 0, 1, 0, 1, 0 } ,
-            { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 1, 0, 0, 0, 0 ,  0, 0, 0, 0, 1, 1, 1, 0, 1, 1 ,  1, 1, 1, 1, 1, 1, 1, 0, 1, 0 } ,
-            { 0, 1, 1, 1, 1, 1, 1, 0, 0, 0 ,  0, 1, 1, 1, 1, 1, 1, 1, 1, 0 ,  0, 1, 1, 1, 1, 1, 1, 0, 0, 0 ,  0, 0, 0, 0, 0, 1, 1, 0, 1, 0 } ,
-            { 0, 1, 1, 1, 1, 1, 1, 0, 0, 0 ,  0, 1, 0, 0, 0, 1, 0, 0, 1, 0 ,  0, 1, 1, 1, 1, 1, 1, 0, 0, 0 ,  0, 0, 0, 0, 0, 0, 0, 0, 1, 0 } ,
-            { 0, 1, 1, 0, 0, 1, 1, 0, 0, 0 ,  0, 1, 0, 0, 0, 1, 0, 0, 1, 0 ,  0, 1, 1, 1, 1, 0, 0, 0, 0, 0 ,  1, 1, 1, 1, 1, 1, 1, 1, 1, 0 } ,
-            { 0, 1, 1, 1, 1, 1, 1, 0, 0, 0 ,  0, 1, 0, 0, 0, 1, 0, 0, 1, 0 ,  0, 1, 0, 0, 0, 0, 0, 0, 0, 0 ,  1, 1, 1, 1, 1, 1, 1, 1, 1, 0 } ,
-            { 0, 1, 1, 1, 1, 1, 1, 0, 0, 0 ,  0, 1, 1, 1, 1, 1, 0, 0, 1, 1 ,  1, 1, 0, 0, 0, 0, 0, 0, 0, 0 ,  1, 1, 1, 1, 1, 1, 1, 1, 1, 0 } ,
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ,
+            MAP_DATA[i][j] = MAP_DATA_INIT[i][j];
+            PLAYER_MAP[i][j] = 0;
         }
-    },
-};
+    }
+    PLAYER_MAP[g_playery / 30][g_playerx / 30] = 1;
+    PLAYER_MAP[(g_playery / 30) + 1][g_playerx / 30] = 1;
 
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-    // タイトル
-    SetMainWindowText("プロトタイプ版"); //ゲームタイトル
-	SetOutApplicationLogValidFlag(FALSE);   //ログ出力を無効にする
-	ChangeWindowMode(TRUE);// ウィンドウモードで起動
-	SetGraphMode(1280, 720, 0); //画面サイズ
-    if (DxLib_Init() == -1) return -1;	// DXライブラリの初期化処理
-	if (LoadImages() == -1)return -1; //画像読込み
-	
-
-    // 描画先画面を裏画面にする
-    SetDrawScreen(DX_SCREEN_BACK);
-
-    // プレイヤーの初期位置をセット
-    PlayerX = 1;
-    PlayerY = 1;
-
-    // 最初は停止中(0)にしておく
-    Move = 0;
-
-    // ループ
-    while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
+    while (ProcessMessage() == 0)
     {
-        // 画面を初期化
-        ClearDrawScreen();
+        ClearDrawScreen();  //画面の初期化
 
-        
-        // 移動中ではない場合キー入力を受け付ける
-        if (Move == 0)
-        {
-            // キー入力を得る
-            Key = GetJoypadInputState(DX_INPUT_KEY_PAD1);
 
-            // キー入力に応じてプレイヤーの座標を移動
-            if (Key & PAD_INPUT_LEFT)
-            {
-                Move = 1;
-                MoveX = -1;
-                MoveY = 0;
-            }
-            if (Key & PAD_INPUT_RIGHT)
-            {
-                Move = 1;
-                MoveX = 1;
-                MoveY = 0;
-            }
-            if (Key & PAD_INPUT_UP)
-            {
-                Move = 1;
-                MoveX = 0;
-                MoveY = -1;
-            }
-            if (Key & PAD_INPUT_DOWN)
-            {
-                Move = 1;
-                MoveX = 0;
-                MoveY = 1;
-            }
+        Stage();
+        Player();
+        Sousa();
 
-            // 進入不可能なマップだった場合は移動できない
-            if (Move == 1)
-            {
-                if (MapData[MapNo].Data[PlayerY + MoveY][PlayerX + MoveX] == 0)
-                {
-                    Move = 0;
-                }
-                else
-                {
-                    MoveCounter = 0;
-                }
-            }
-
-            // 停止中は画面のスクロールは行わない
-            ScrollX = 0;
-            ScrollY = 0;
-        }
-
-        // 移動中の場合は移動処理を行う
-        if (Move == 1)
-        {
-            MoveCounter++;
-
-            // 移動処理が終了したら停止中にする
-            if (MoveCounter == MOVE_FRAME)
-            {
-                Move = 0;
-
-                // プレイヤーの位置を変更する
-                PlayerX += MoveX;
-                PlayerY += MoveY;
-
-                // 停止中は画面のスクロールは行わない
-                ScrollX = 0;
-                ScrollY = 0;
-            }
-            else
-            {
-                // 経過時間からスクロール量を算出する
-                ScrollX = -(MoveX * MAP_SIZE * MoveCounter / MOVE_FRAME);
-                ScrollY = -(MoveY * MAP_SIZE * MoveCounter / MOVE_FRAME);
-            }
-        }
-
-        // マップとプレイヤーを描画
-        GraphDraw(ScrollX, ScrollY);
-
-        // 裏画面の内容を表画面に映す
-        ScreenFlip();
+        ScreenFlip();         //裏画面の内容を表画面に反映
     }
 
-    DxLib_End();               // ＤＸライブラリ使用の終了処理
-
-    return 0;                  // ソフトの終了
-}
-
-int LoadImages(void) { //画像読込み
-	if (LoadDivGraph("images/player/player.png", 16, 4, 4, 70, 90,CharacterImages) == 1)return -1; //少年仮
-	if((background1 = LoadGraph("images/background/street003_day.png")) == -1)return -1;// 背景
-	if ((blockImages = LoadGraph("images/block/0115_s1.png")) == -1)return -1; //ブロック
-	
-}
-
-int GetArrayImages(int type, int num) { //type,使いたい画像の要素数を指定することで、指定した画像が使える
-	switch (type)
-	{
-	case CharacterImage: //少年
-		if (0 <= num && num <= 16) {
-			return CharacterImages[num];
-		}
-		else { return -1; }
-		break;
-	}
+    DxLib_End();  //DXライブラリ使用の終了処理
+    return 0;  //ソフトの終了
 }
 
 
-// マップとプレイヤーの描画関数
-void GraphDraw(int ScrollX, int ScrollY)
+
+
+/***********************************************
+* ステージ描画
+***********************************************/
+void Stage()
 {
-    int j, i;
-    int MapDrawPointX, MapDrawPointY;     // 描画するマップ座標値
-    int DrawMapChipNumX, DrawMapChipNumY; // 描画するマップチップの数
-
-    // 描画するマップチップの数をセット
-    DrawMapChipNumX = 1280 / MAP_SIZE + 2;
-    DrawMapChipNumY = 720 / MAP_SIZE + 2;
-
-    // 画面左上に描画するマップ座標をセット
-    MapDrawPointX = character.getCharacter_X() - (DrawMapChipNumX / 2 - 1);
-    MapDrawPointY = character.getCharacter_Y() - (DrawMapChipNumY / 2 - 1);
-
-    // マップを描く
-    for (i = -1; i < DrawMapChipNumY; i++)
+    for (int i = 0; i < MAP_HIGHT; i++)
     {
-        for (j = -1; j < DrawMapChipNumX; j++)
+        for (int j = 0; j < MAP_WIDTH; j++)
         {
-            // 画面からはみ出た位置なら描画しない
-            if (j + MapDrawPointX < 0 || i + MapDrawPointY < 0 ||
-                j + MapDrawPointX >= MapData[MapNo].Width || i + MapDrawPointY >= MapData[MapNo].Height) continue;
-
-            // マップデータが０だったら四角を描画する
-            if (MapData[MapNo].Data[i + MapDrawPointY][j + MapDrawPointX] == 0)
-            {
-                 DrawBox(j * MAP_SIZE + ScrollX, i * MAP_SIZE + ScrollY,
-                     j * MAP_SIZE + MAP_SIZE + ScrollX, i * MAP_SIZE + MAP_SIZE + ScrollY,
-                     GetColor(255, 0, 0), TRUE);
-            }
+            DrawGraph(30 * j, 30 * i, g_block_image[MAP_DATA[i][j]], TRUE);
+            //DrawFormatString(14 * j, 14 * i, 0xffffff, "%d", PLAYER_MAP[i][j]);
+            DrawFormatString(14 * j, 14 * i, 0xffffff, "%d", MAP_DATA[i][j]);
+            PLAYER_MAP[i][j] = 0;
         }
     }
 }
+
+void Sousa(void)
+{
+    if (!CheckHitKey(KEY_INPUT_LEFT) && !CheckHitKey(KEY_INPUT_RIGHT) && !CheckHitKey(KEY_INPUT_UP) && !CheckHitKey(KEY_INPUT_DOWN))g_old_key = 0;
+    if (!CheckHitKey(KEY_INPUT_A))g_AKey = FALSE;
+
+    if (CheckHitKey(KEY_INPUT_LEFT))
+    {
+        g_now_key = KEY_INPUT_LEFT;
+        if (g_now_key == g_old_key)
+        {
+            g_cursor_speed++;
+            if (g_cursor_speed >= 10)
+            {
+                g_cursor_speed = 0;
+                if (g_cursorx > 0)g_cursorx--;
+            }
+        }
+        else if (g_old_key == 0)
+        {
+            g_cursor_speed = 0;
+            if (g_cursorx > 0)g_cursorx--;
+        }
+        g_old_key = KEY_INPUT_LEFT;
+    }
+    if (CheckHitKey(KEY_INPUT_RIGHT))
+    {
+        g_now_key = KEY_INPUT_RIGHT;
+        if (g_now_key == g_old_key)
+        {
+            g_cursor_speed++;
+            if (g_cursor_speed >= 10)
+            {
+                g_cursor_speed = 0;
+                if (g_cursorx < 19)g_cursorx++;
+            }
+        }
+        else if (g_old_key == 0)
+        {
+            g_cursor_speed = 0;
+            if (g_cursorx < 19)g_cursorx++;
+        }
+        g_old_key = KEY_INPUT_RIGHT;
+    }
+    if (CheckHitKey(KEY_INPUT_UP))
+    {
+        g_now_key = KEY_INPUT_UP;
+        if (g_now_key == g_old_key)
+        {
+            g_cursor_speed++;
+            if (g_cursor_speed >= 10)
+            {
+                g_cursor_speed = 0;
+                if (g_cursory > 0)g_cursory--;
+            }
+        }
+        else if (g_old_key == 0)
+        {
+            g_cursor_speed = 0;
+            if (g_cursory > 0)g_cursory--;
+        }
+        g_old_key = KEY_INPUT_UP;
+    }
+    if (CheckHitKey(KEY_INPUT_DOWN))
+    {
+        g_now_key = KEY_INPUT_DOWN;
+        if (g_now_key == g_old_key)
+        {
+            g_cursor_speed++;
+            if (g_cursor_speed >= 10)
+            {
+                g_cursor_speed = 0;
+                if (g_cursory < 19)g_cursory++;
+            }
+        }
+        else if (g_old_key == 0)
+        {
+            g_cursor_speed = 0;
+            if (g_cursory < 19)g_cursory++;
+        }
+        g_old_key = KEY_INPUT_DOWN;
+    }
+
+    if (CheckHitKey(KEY_INPUT_A))
+    {
+        if (g_AKey == FALSE)
+        {
+            if (/*MAP_DATA[g_cursory][g_cursorx] == 0 &&*/ PLAYER_MAP[g_cursory][g_cursorx] == 0)MAP_DATA[g_cursory][g_cursorx] = 2;
+            //else if (MAP_DATA[g_cursory][g_cursorx] != 0)MAP_DATA[g_cursory][g_cursorx] = 0;
+        }
+        g_AKey = TRUE;
+    }
+
+    DrawGraph(30 * g_cursorx, 30 * g_cursory, g_cursor_image, TRUE);
+}
+
+void Player()
+{
+    if (MAP_DATA[(g_playery / 30) + 2][g_playerx / 30] == 2 || g_jump > 0)Jump();
+    else Walk();
+
+    if ((g_playery / 30) + 1 < MAP_HIGHT)
+    {
+        PLAYER_MAP[g_playery / 30][g_playerx / 30] = 1;
+        PLAYER_MAP[(g_playery / 30) + 1][g_playerx / 30] = 1;
+        PLAYER_MAP[g_playery / 30][g_playerx / 30 + 1] = 2;
+        PLAYER_MAP[(g_playery / 30) + 1][g_playerx / 30 + 1] = 2;
+    }
+
+    g_image_time++;
+    if (g_image_time >= 8)
+    {
+        g_player_image_type++;
+        g_image_time = 0;
+        if (g_player_image_type >= 4)g_player_image_type = 0;
+    }
+
+    DrawFormatString(0, 500, 0xffffff, "x = %d", g_playery / 30);
+    DrawRotaGraph(g_playerx + g_playerx_radius, g_playery + g_playery_radius, 1.0, M_PI / 180 * 0, g_player_image[g_player_image_type], TRUE, g_hanten);
+}
+
+void Walk(void)
+{
+    if (g_hanten == FALSE)
+    {
+        if (MAP_DATA[(g_playery / 30) + 2][g_playerx / 30] > 0)//足元が穴じゃなければ
+        {
+            if (MAP_DATA[g_playery / 30][(g_playerx + g_player_width) / 30] > 0 || MAP_DATA[(g_playery / 30) + 1][(g_playerx + g_player_width) / 30] > 0)g_hanten = true;
+            else  g_playerx++;
+        }
+        else g_playery += 3; //足元が穴なら落ちる
+    }
+    else
+    {
+        if (MAP_DATA[(g_playery / 30) + 2][(g_playerx / 30) + 1] > 0)//足元が穴じゃなけば
+        {
+            if (MAP_DATA[g_playery / 30][(g_playerx - 1) / 30] > 0 || MAP_DATA[(g_playery / 30) + 1][(g_playerx - 1) / 30] > 0)g_hanten = false;
+            else g_playerx--;
+        }
+        else g_playery += 3;
+    }
+}
+
+void Jump(void)
+{
+    switch (g_jump)
+    {
+    case 0:
+        g_jump_starty = g_playery;
+        g_jump = 1;
+        break;
+
+    case 1:
+        g_playery -= 5;
+
+        if (g_jump_starty - g_playery >= 90)
+        {
+            g_playery = g_jump_starty - (30 * 3);
+            g_jump_centerx = g_playerx + g_jump_radius;
+            g_jump_centery = g_playery;
+            g_jump_angle = 180;
+            g_jump = 2;
+        }
+
+        //g_enemyy = (sin(g_enemy_angle * M_PI / 180) * g_enemy_radius) + g_centery;
+        //g_enemyx = (cos(g_enemy_angle * M_PI / 180) * g_enemy_radius) + g_centerx;
+
+        break;
+    case 2:
+
+        g_playery = (sin(g_jump_angle * M_PI / 180) * g_jump_radius) + g_jump_centery;
+        g_playerx = (cos(g_jump_angle * M_PI / 180) * g_jump_radius) + g_jump_centerx;
+        g_jump_angle += 10;
+        if (g_jump_angle >= 360)g_jump_angle = 0, g_jump = 0;
+
+        break;
+
+    case 3:
+        g_jump = 0;
+        break;
+    }
+
+    DrawFormatString(300, 300, 0xffffff, "%d アングル", g_jump);
+
+
+
+    //g_enemyy = (sin(g_enemy_angle * M_PI / 180) * g_enemy_radius) + g_centery;
+}
+
+/***********************************************
+* 画像読み込み
+***********************************************/
+int LoadImages()
+{
+    //if ((g_player_image = LoadGraph("images/human.png")) == -1) return -1;
+    if ((g_cursor_image = LoadGraph("images/cursor .png")) == -1) return -1;
+    if (LoadDivGraph("images/block/stage3.png", 5, 5, 1, 30, 30, g_block_image) == -1) return -1;
+    if (LoadDivGraph("images/player/human.png", 4, 4, 1, 30, 60, g_player_image) == -1) return -1;
+}
+
+
+
