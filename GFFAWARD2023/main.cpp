@@ -1,4 +1,4 @@
-#include "DxLib.h"
+#include"DxLib.h"
 #include"main.h"
 #include"character.h"
 #include"map.h"
@@ -18,6 +18,10 @@ int blockImages; //ブロック画像
 int MapNo; //マップの数
 int Key; //キー入力
 int ScrollX, ScrollY;
+int MoveX, MoveY;
+int Move;
+int PlayerY, PlayerX;
+int MoveCounter;
 
 Character character;
 
@@ -29,6 +33,8 @@ Character character;
 #define MAP_HEIGHT_MAX 40 //マップの最大縦長さ
 
 #define MOVE_FRAME 15 //移動にかけるフレーム数
+
+void GraphDraw(int ScrollX, int ScrollY);
 
 
 // マップの構造体
@@ -101,36 +107,52 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     if (DxLib_Init() == -1) return -1;	// DXライブラリの初期化処理
 	if (LoadImages() == -1)return -1; //画像読込み
 	
-	SetDrawScreen(DX_SCREEN_BACK); // 描画先画面を裏にする
-    
+
+    // 描画先画面を裏画面にする
+    SetDrawScreen(DX_SCREEN_BACK);
+
+    // プレイヤーの初期位置をセット
+    PlayerX = 1;
+    PlayerY = 1;
+
+    // 最初は停止中(0)にしておく
+    Move = 0;
+
     // ループ
     while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
     {
         // 画面を初期化
         ClearDrawScreen();
 
+        
+        // 移動中ではない場合キー入力を受け付ける
+        if (Move == 0)
+        {
             // キー入力を得る
             Key = GetJoypadInputState(DX_INPUT_KEY_PAD1);
 
             // キー入力に応じてプレイヤーの座標を移動
             if (Key & PAD_INPUT_LEFT)
             {
+                Move = 1;
                 MoveX = -1;
                 MoveY = 0;
             }
             if (Key & PAD_INPUT_RIGHT)
             {
+                Move = 1;
                 MoveX = 1;
                 MoveY = 0;
             }
             if (Key & PAD_INPUT_UP)
             {
+                Move = 1;
                 MoveX = 0;
                 MoveY = -1;
             }
             if (Key & PAD_INPUT_DOWN)
             {
-               
+                Move = 1;
                 MoveX = 0;
                 MoveY = 1;
             }
@@ -148,10 +170,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 }
             }
 
-            //// 停止中は画面のスクロールは行わない
-            //ScrollX = 0;
-            //ScrollY = 0;
-        
+            // 停止中は画面のスクロールは行わない
+            ScrollX = 0;
+            ScrollY = 0;
+        }
 
         // 移動中の場合は移動処理を行う
         if (Move == 1)
