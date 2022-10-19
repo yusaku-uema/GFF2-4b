@@ -25,7 +25,7 @@ int g_old_key = 0;
 int g_now_key = 0;
 
 bool g_AKey = FALSE;
-bool g_direction = true; //false = 右向き　true = 左向き
+bool g_direction = false; //false = 右向き　true = 左向き
 int g_playerx = 6 * 30;
 int g_playery = 7 * 30;
 int g_player_hight = 60;
@@ -68,7 +68,7 @@ unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,2,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
         {4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
@@ -256,7 +256,7 @@ void Walk(void)
         {
             if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;
             else g_playerx = ((g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
-            g_playery += 6; //足元が穴なら落ちる
+            g_playery += 1; //足元が穴なら落ちる
         }
 
     //DrawFormatString(300, 300, 0xffffff, "%d アングル", g_jump_endy);
@@ -279,8 +279,8 @@ void Jump(void)
 
     case 1:
 
-        if (g_direction == FALSE) g_jump_angle += 6;
-        else g_jump_angle -= 6;
+        if (g_direction == FALSE) g_jump_angle += 1;
+        else g_jump_angle -= 1;
 
         g_playery = (sin(g_jump_angle * M_PI / 180) * 92) + g_jump_centery;
         g_playerx = (cos(g_jump_angle * M_PI / 180) * 15) + g_jump_centerx;
@@ -299,6 +299,9 @@ void Jump(void)
                 g_jump = 0;
             }
         }
+
+
+        DrawFormatString(300, 300, 0xffffff, "%d アングル", g_jump_endy);
         break;
 
     case 2:
