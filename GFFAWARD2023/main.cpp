@@ -158,15 +158,22 @@ void Stage()
 
 void Sousa(void)
 {
-    if (!CheckHitKey(KEY_INPUT_LEFT) && !CheckHitKey(KEY_INPUT_RIGHT) && !CheckHitKey(KEY_INPUT_UP) && !CheckHitKey(KEY_INPUT_DOWN))g_old_key = 0;
-    if (!CheckHitKey(KEY_INPUT_A))g_AKey = FALSE;
+    if (!(GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_LEFT) && 
+        !(GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_RIGHT) && 
+        !(GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_UP) && 
+        !(GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_DOWN))g_old_key = 0;
 
-    if (CheckHitKey(KEY_INPUT_LEFT) || CheckHitKey(KEY_INPUT_RIGHT) || CheckHitKey(KEY_INPUT_UP) || CheckHitKey(KEY_INPUT_DOWN))
+    if (!(GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_A))g_AKey = FALSE;
+
+    if ((GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_LEFT) || 
+        (GetJoypadInputState(DX_INPUT_PAD1)&PAD_INPUT_RIGHT) ||
+        (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_UP) ||
+        (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_DOWN))
     {
-        if (CheckHitKey(KEY_INPUT_LEFT)) g_now_key = KEY_INPUT_LEFT;
-        if (CheckHitKey(KEY_INPUT_RIGHT)) g_now_key = KEY_INPUT_RIGHT;
-        if (CheckHitKey(KEY_INPUT_UP)) g_now_key = KEY_INPUT_UP;
-        if (CheckHitKey(KEY_INPUT_DOWN)) g_now_key = KEY_INPUT_DOWN;
+        if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_LEFT) g_now_key = PAD_INPUT_LEFT;
+        if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_RIGHT) g_now_key = PAD_INPUT_RIGHT;
+        if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_UP) g_now_key = PAD_INPUT_UP;
+        if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_DOWN) g_now_key = PAD_INPUT_DOWN;
 
         if (g_now_key == g_old_key)
         {
@@ -174,24 +181,24 @@ void Sousa(void)
             if (g_cursor_speed >= 10)
             {
                 g_cursor_speed = 0;
-                if (g_now_key == KEY_INPUT_LEFT && g_cursorx > 0)g_cursorx--;
-                if (g_now_key == KEY_INPUT_RIGHT && g_cursorx < 19)g_cursorx++;
-                if (g_now_key == KEY_INPUT_UP && g_cursory > 0)g_cursory--;
-                if (g_now_key == KEY_INPUT_DOWN && g_cursory < 19)g_cursory++;
+                if (g_now_key == PAD_INPUT_LEFT && g_cursorx > 0)g_cursorx--;
+                if (g_now_key == PAD_INPUT_RIGHT && g_cursorx < 19)g_cursorx++;
+                if (g_now_key == PAD_INPUT_UP && g_cursory > 0)g_cursory--;
+                if (g_now_key == PAD_INPUT_DOWN && g_cursory < 19)g_cursory++;
             }
         }
         else if (g_old_key == 0)
         {
             g_cursor_speed = 0;
-            if (g_now_key == KEY_INPUT_LEFT && g_cursorx > 0)g_cursorx--;
-            if (g_now_key == KEY_INPUT_RIGHT && g_cursorx < 19)g_cursorx++;
-            if (g_now_key == KEY_INPUT_UP && g_cursory > 0)g_cursory--;
-            if (g_now_key == KEY_INPUT_DOWN && g_cursory < 19)g_cursory++;
+            if (g_now_key == PAD_INPUT_LEFT && g_cursorx > 0)g_cursorx--;
+            if (g_now_key == PAD_INPUT_RIGHT && g_cursorx < 19)g_cursorx++;
+            if (g_now_key == PAD_INPUT_UP && g_cursory > 0)g_cursory--;
+            if (g_now_key == PAD_INPUT_DOWN && g_cursory < 19)g_cursory++;
         }
         g_old_key = g_now_key;
     }
 
-    if (CheckHitKey(KEY_INPUT_A))
+    if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_A)
     {
         if (g_AKey == FALSE)
         {
