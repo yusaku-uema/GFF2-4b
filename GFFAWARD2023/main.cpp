@@ -182,9 +182,9 @@ void Sousa(void)
             {
                 g_cursor_speed = 0;
                 if (g_now_key == PAD_INPUT_LEFT && g_cursorx > 0)g_cursorx--;
-                if (g_now_key == PAD_INPUT_RIGHT && g_cursorx < 19)g_cursorx++;
+                if (g_now_key == PAD_INPUT_RIGHT && g_cursorx < 42)g_cursorx++;
                 if (g_now_key == PAD_INPUT_UP && g_cursory > 0)g_cursory--;
-                if (g_now_key == PAD_INPUT_DOWN && g_cursory < 19)g_cursory++;
+                if (g_now_key == PAD_INPUT_DOWN && g_cursory < 42)g_cursory++;
             }
         }
         else if (g_old_key == 0)
