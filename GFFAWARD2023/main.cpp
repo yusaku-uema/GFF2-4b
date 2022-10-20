@@ -7,7 +7,7 @@
 #define MAP_WIDTH 86
 
 #define BLOCK_WIDTH 30
-#define PLAYER_HIGHT 30
+//#define PLAYER_HIGHT 30
 
 /***********************************************
  * 変数
@@ -19,6 +19,14 @@ int g_player_image[4];
 int g_cursor_image;
 int g_white_image;
 int g_jump_image;
+
+int g_player_hit_lowerbody_front = 0; //プレイヤーが当たった障害物
+int g_player_hit_upperbody_front = 0;
+int g_player_hit_lowerbody_back = 0; //プレイヤーが当たった障害物
+int g_player_hit_upperbody_back = 0;
+
+int g_player_hit_under_back = 1;
+int g_player_hit_under_front = 1;
 
 int g_uicursorx = 0;
 bool g_uicursor = FALSE;
@@ -33,7 +41,7 @@ int g_now_key = 0;
 
 bool g_AKey = FALSE;
 bool g_direction = false; //false = 右向き　true = 左向き
-int g_playerx = 6 * 30;
+int g_playerx = 20 * 30;
 int g_playery = 7 * 30;
 
 int g_player_speed = 1;
@@ -70,13 +78,12 @@ unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
         {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
 };
 unsigned int PLAYER_MAP[MAP_HIGHT][MAP_WIDTH];
-unsigned int ITEM_MAP[MAP_HIGHT][MAP_WIDTH];
 unsigned int MAP_DATA[MAP_HIGHT][MAP_WIDTH];
 
 /***********************************************
@@ -114,8 +121,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         {
             MAP_DATA[i][j] = MAP_DATA_INIT[i][j];
             PLAYER_MAP[i][j] = 0;
-            ITEM_MAP[i][j] = 0;
-
         }
     }
     PLAYER_MAP[g_playery / 30][g_playerx / 30] = 1;
@@ -126,7 +131,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         ClearDrawScreen();  //画面の初期化
 
         
-        Sousa();
+        if (g_stage_scroll == FALSE)Sousa();
         Stage();
         Player();
         
@@ -138,7 +143,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     DxLib_End();  //DXライブラリ使用の終了処理
     return 0;  //ソフトの終了
 }
-
 
 /***********************************************
 * UI
@@ -154,9 +158,6 @@ void UI(void)
     }
 }
 
-
-
-
 /***********************************************
 * ステージ描画
 ***********************************************/
@@ -166,8 +167,9 @@ void Stage()
     {
         for (int j = 0; j < MAP_WIDTH; j++)
         {
-            DrawGraph((30 * j) - g_stage_x, (30 * i) , g_block_image[MAP_DATA[i][j]], TRUE);
-            if(ITEM_MAP[i][j] == 1) DrawGraph((30 * j) - g_stage_x, 30 * i, g_jump_image, TRUE);
+            if(MAP_DATA[i][j] < 10)DrawGraph((30 * j) - g_stage_x, 30 * i , g_block_image[MAP_DATA[i][j]], TRUE);
+            else DrawGraph((30 * j) - g_stage_x, 30 * i, g_jump_image, TRUE);
+
             DrawFormatString(14 * j, 14 * i, 0xffffff, "%d", MAP_DATA[i][j]);
             //DrawLine(0, 30 * i, MAP_WIDTH * 30, 30 * i, 0xffffff, TRUE);
             //DrawLine(30 * j, 0, 30 * j, MAP_HIGHT * 30, 0xffffff, TRUE);
@@ -178,12 +180,17 @@ void Stage()
     if (g_stage_scroll == TRUE)
     {
         g_stage_x += 10;
-        g_playerx -= 10;
 
-        if (g_stage_x > (42 * BLOCK_WIDTH))g_stage_scroll = FALSE, g_stage_x = (42 * BLOCK_WIDTH);
+        if (g_stage_x > (42 * BLOCK_WIDTH))
+        {
+            g_stage_scroll = FALSE;
+            g_stage_x = (42 * BLOCK_WIDTH);
+            g_cursorx += 42;
+        }
 
     }
-    DrawGraph(30 * g_cursorx, 30 * g_cursory, g_cursor_image, TRUE);
+
+    DrawGraph(30 * (g_cursorx), 30 * g_cursory, g_cursor_image, TRUE);
 }
 
 void Sousa(void)
@@ -207,19 +214,8 @@ void Sousa(void)
         if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_UP) g_now_key = PAD_INPUT_UP;
         if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_DOWN) g_now_key = PAD_INPUT_DOWN;
 
-        if (g_now_key == g_old_key)
-        {
-            g_cursor_speed++;
-            if (g_cursor_speed >= 10)
-            {
-                g_cursor_speed = 0;
-                if (g_now_key == PAD_INPUT_LEFT && g_cursorx > 0)g_cursorx--;
-                if (g_now_key == PAD_INPUT_RIGHT && g_cursorx < 42)g_cursorx++;
-                if (g_now_key == PAD_INPUT_UP && g_cursory > 0)g_cursory--;
-                if (g_now_key == PAD_INPUT_DOWN && g_cursory < 19)g_cursory++;
-            }
-        }
-        else if (g_old_key == 0)
+        if (g_now_key == g_old_key) g_cursor_speed++;
+        if (g_cursor_speed >= 10 || g_old_key == 0)
         {
             g_cursor_speed = 0;
             if (g_now_key == PAD_INPUT_LEFT && g_cursorx > 0)g_cursorx--;
@@ -227,6 +223,7 @@ void Sousa(void)
             if (g_now_key == PAD_INPUT_UP && g_cursory > 0)g_cursory--;
             if (g_now_key == PAD_INPUT_DOWN && g_cursory < 19)g_cursory++;
         }
+       
         g_old_key = g_now_key;
     }
 
@@ -236,7 +233,7 @@ void Sousa(void)
         {
             if (MAP_DATA[g_cursory][g_cursorx] == 0 && PLAYER_MAP[g_cursory][g_cursorx] == 0)
             {
-                if(g_uicursorx == 1 && MAP_DATA[g_cursory + 1][g_cursorx] > 0) ITEM_MAP[g_cursory][g_cursorx] = 1;
+                if(g_uicursorx == 1 && MAP_DATA[g_cursory + 1][g_cursorx] > 0 && MAP_DATA[g_cursory + 1][g_cursorx] < 10) MAP_DATA[g_cursory][g_cursorx] = 10;
                 if (g_uicursorx == 0 && MAP_DATA[g_cursory][g_cursorx] == 0) MAP_DATA[g_cursory][g_cursorx] = 2;
             }
             //else if (MAP_DATA[g_cursory][g_cursorx] != 0)MAP_DATA[g_cursory][g_cursorx] = 0;
@@ -262,22 +259,36 @@ void Sousa(void)
             g_uicursor = TRUE;
         }
     }
-   
 }
 
 void Player()
 {
-    
+    if (g_direction == FALSE)
+    {
+        g_player_hit_under_back = MAP_DATA[(g_playery / BLOCK_WIDTH) + 2][g_playerx / BLOCK_WIDTH];
+        g_player_hit_under_front = MAP_DATA[(g_playery / BLOCK_WIDTH) + 2][(g_playerx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
+        g_player_hit_lowerbody_front = MAP_DATA[(g_playery / BLOCK_WIDTH) + 1][(g_playerx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH]; 
+        g_player_hit_upperbody_front = MAP_DATA[g_playery / BLOCK_WIDTH][(g_playerx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+        g_player_hit_lowerbody_back = MAP_DATA[(g_playery / BLOCK_WIDTH) + 1][g_playerx / BLOCK_WIDTH];
+        g_player_hit_upperbody_back = MAP_DATA[g_playery / BLOCK_WIDTH][g_playerx / BLOCK_WIDTH];
+    }
+    else
+    {
+        g_player_hit_under_back = MAP_DATA[(g_playery / BLOCK_WIDTH) + 2][(g_playerx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
+        g_player_hit_under_front = MAP_DATA[(g_playery / BLOCK_WIDTH) + 2][g_playerx / BLOCK_WIDTH];
+        g_player_hit_lowerbody_front = MAP_DATA[(g_playery / BLOCK_WIDTH) + 1][g_playerx / BLOCK_WIDTH];
+        g_player_hit_upperbody_front = MAP_DATA[g_playery / BLOCK_WIDTH][g_playerx / BLOCK_WIDTH];
+        g_player_hit_lowerbody_back = MAP_DATA[(g_playery / BLOCK_WIDTH) + 1][(g_playerx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+        g_player_hit_upperbody_back = MAP_DATA[g_playery / BLOCK_WIDTH][(g_playerx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+    }
+
 
     if (g_stage_scroll == FALSE)
     {
-        if ((ITEM_MAP[(g_playery / BLOCK_WIDTH) + 1][g_playerx / BLOCK_WIDTH] == 1 && g_direction == FALSE) ||
-            (ITEM_MAP[(g_playery / BLOCK_WIDTH) + 1][(g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH] == 1 && g_direction == TRUE) ||
-            g_jump > 0)Jump();
+        if ((g_player_hit_lowerbody_back == 10) || g_jump > 0)Jump();
         else Walk();
 
-        if ((MAP_DATA[(g_playery / BLOCK_WIDTH) + 2][g_playerx / BLOCK_WIDTH] == 3 && g_direction == FALSE) ||
-            (MAP_DATA[(g_playery / BLOCK_WIDTH) + 2][(g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH] == 3 && g_direction == TRUE))
+        if (g_player_hit_under_back == 3 && g_stage_x == 0)
         {
             g_stage_scroll = TRUE;
             if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;
@@ -302,36 +313,36 @@ void Player()
     }
 
     DrawFormatString(0, 500, 0xffffff, "x = %d", g_playery / 30);
-    DrawRotaGraph(g_playerx + g_playerx_radius, g_playery + g_playery_radius, 1.0, M_PI / 180 * 0, g_player_image[g_player_image_type], TRUE, g_direction);
+    DrawRotaGraph((g_playerx + 15) - g_stage_x, g_playery + 30, 1.0, M_PI / 180 * 0, g_player_image[g_player_image_type], TRUE, g_direction);
     DrawPixel(g_playerx, g_playery, 0xffffff);
 }
 
 void Walk(void)
 {
-    if ((MAP_DATA[(g_playery / BLOCK_WIDTH) + 2][g_playerx / BLOCK_WIDTH] > 0 && g_direction == FALSE) ||
-        (MAP_DATA[(g_playery / BLOCK_WIDTH) + 2][(g_playerx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH] > 0 && g_direction == TRUE))//足元が穴じゃなければ
+    if (g_player_hit_under_back > 0 && g_player_hit_under_back < 10)
     {
-        g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH;
+        g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH; //プレイヤーのy座標を整える
 
-        if ((g_direction == FALSE && MAP_DATA[g_playery / BLOCK_WIDTH][(g_playerx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH] > 0 || MAP_DATA[(g_playery / BLOCK_WIDTH) + 1][(g_playerx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH] > 0) ||
-            (g_direction == TRUE && MAP_DATA[g_playery / BLOCK_WIDTH][g_playerx / BLOCK_WIDTH] > 0 || MAP_DATA[(g_playery / BLOCK_WIDTH) + 1][g_playerx / BLOCK_WIDTH] > 0))
+        if ((g_player_hit_lowerbody_front == 0 || g_player_hit_lowerbody_front >= 10) && (g_player_hit_upperbody_front == 0 || g_player_hit_upperbody_front >= 10))
+        {
+            if (g_direction == FALSE)g_playerx += g_player_speed; //障害物に当たってなかったら進む
+            else g_playerx -= g_player_speed;
+
+            DrawFormatString(0, 350, 0xffffff, "歩いてます %d", g_player_hit_lowerbody_front);
+        }
+        else
         {
             if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH, g_direction = TRUE; //プレイヤーがめり込んでるかもしれないからx座標を調整する
             else  g_playerx = ((g_playerx / BLOCK_WIDTH) + 1) * BLOCK_WIDTH, g_direction = FALSE;
         }
-        else
-        {
-            if (g_direction == FALSE)g_playerx += g_player_speed;
-            else g_playerx -= g_player_speed;
-        }
     }
     else
     {
-        if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;
+        if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;  //キャラを穴の真ん中にする
         else g_playerx = ((g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
-        g_playery += 5; //足元が穴なら落ちる
+        g_playery += 5; //キャラを落とす
     }
-
+    
     //DrawFormatString(300, 300, 0xffffff, "%d アングル", g_jump_endy);
 }
 
@@ -340,42 +351,41 @@ void Jump(void)
     switch (g_jump)
     {
     case 0:
-        g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;
-        g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH;
-        g_jump_centery = g_playery;
-        if (g_direction == FALSE)g_jump_centerx = g_playerx + (BLOCK_WIDTH / 2), g_jump_angle = 180;
-        else g_jump_centerx = g_playerx - (BLOCK_WIDTH / 2), g_jump_angle = 0;
+        g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH; //x座標を整える
+        g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH; //y座標を整える
+        g_jump_centery = g_playery; //円を描いてジャンプするための中心座標yを設定
+        if (g_direction == FALSE)g_jump_centerx = g_playerx + (BLOCK_WIDTH / 2), g_jump_angle = 180; //中心座標ｘとジャンプするための現在の角度を設定
+        else g_jump_centerx = g_playerx - (BLOCK_WIDTH / 2), g_jump_angle = 0; //中心座標ｘとジャンプするための現在の角度を設定
         g_jump = 1;
         break;
-    case 1:
-        if (g_direction == FALSE) g_jump_angle += 4;
-        else g_jump_angle -= 4;
 
-        g_playery = (sin(g_jump_angle * M_PI / 180) * 90) + g_jump_centery;
-        g_playerx = (cos(g_jump_angle * M_PI / 180) * 15) + g_jump_centerx;
-        if (g_jump_angle >= 280 || g_jump_angle <= -90)
+    case 1:
+        if (g_direction == FALSE) g_jump_angle += 4; //円を描くためのアングルを加算
+        else g_jump_angle -= 4; ////円を描くためのアングルを減算
+
+        g_playery = (sin(g_jump_angle * M_PI / 180) * 90) + g_jump_centery; //円を描くためのy座標を計算
+        g_playerx = (cos(g_jump_angle * M_PI / 180) * 15) + g_jump_centerx; //円を描くためのx座標を計算
+
+        if (g_jump_angle >= 270 || g_jump_angle <= -90) //ジャンプして、落ち始めたら
         {
-            if ((MAP_DATA[(g_playery / BLOCK_WIDTH) + 2][(g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH] > 0 && g_direction == FALSE) ||
-                (MAP_DATA[(g_playery / BLOCK_WIDTH) + 2][g_playerx / BLOCK_WIDTH] > 0 && g_direction == TRUE))
+            if (g_player_hit_under_front > 0 && g_player_hit_under_front < 10)
             {
                 g_jump = 2;
-                g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH;
+                g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH; //プレイヤーのｙ座標を整える
             }
-            else if (g_jump_angle >= 360 || g_jump_angle <= -180)
+            else if (g_jump_angle >= 360 || g_jump_angle <= -180) //ブロックなどに当たらなかったら
             {
-                g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH;
-                g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;
+                g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH; //y座標を整える
+                g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH; //x座標を整える
                 g_jump = 0;
             }
         }
-        if ((MAP_DATA[g_playery / BLOCK_WIDTH][g_playerx / BLOCK_WIDTH] > 0 && g_direction == FALSE) ||
-            (MAP_DATA[g_playery / BLOCK_WIDTH][(g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH] > 0 && g_direction == TRUE))
+        if (g_player_hit_lowerbody_back > 0 && g_player_hit_lowerbody_back < 10)
         {
             if (g_direction == FALSE)g_playerx = g_playerx / BLOCK_WIDTH * BLOCK_WIDTH;
             else g_playerx = (g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH * BLOCK_WIDTH;
             g_jump = 0;
         }
-
         break;
 
     case 2:
@@ -383,8 +393,7 @@ void Jump(void)
         if (g_direction == FALSE)g_playerx += g_player_speed;
         else g_playerx -= g_player_speed;
 
-        if ((MAP_DATA[(g_playery / BLOCK_WIDTH) + 2][g_playerx / BLOCK_WIDTH] > 0 && g_direction == FALSE) ||
-            (MAP_DATA[(g_playery / BLOCK_WIDTH) + 2][(g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH] > 0 && g_direction == TRUE))
+        if (g_player_hit_under_back > 0 && g_player_hit_under_back < 10)
         {
             if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;
             else g_playerx = ((g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
