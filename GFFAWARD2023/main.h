@@ -1,6 +1,6 @@
 #pragma once
 
-enum ArrayImages { Character }; //GetArrayImagesでの,type指定名前
+enum ArrayImages { Character,EnemyImages }; //GetArrayImagesでの,type指定名前
 
 
 int LoadImages(void); //画像読込み

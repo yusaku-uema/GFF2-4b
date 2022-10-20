@@ -8,12 +8,14 @@ struct ENEMY {
 	int x, y, w, h;
 };
 
-struct ENEMY g_enemy;
-
 class Enemy {
 public:
 	int timer;
+	struct ENEMY g_enemy;
 
 	Enemy();
 	int EnemyMove(void);
+	void EnemyDraw(void);
 };
+
+extern Enemy enemy;

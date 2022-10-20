@@ -2,6 +2,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include"stdlib.h"
+#include"main.h"
+#include"Enemy.h"
 
 #define MAP_HIGHT 20
 #define MAP_WIDTH 43
@@ -51,7 +53,7 @@ int g_jump_angle = 10;
 
 int g_playerx_radius = 30 / 2;
 int g_playery_radius = 60 / 2;
-int g_EnemyImage[6];
+int img_Enemy[6];
 
 unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -77,6 +79,7 @@ unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
 };
 unsigned int PLAYER_MAP[MAP_HIGHT][MAP_WIDTH];
 unsigned int MAP_DATA[MAP_HIGHT][MAP_WIDTH];
+unsigned int ENEMY_MAP[MAP_HIGHT][MAP_WIDTH];
 
 /***********************************************
  * 関数プロトタイプ宣言
@@ -85,11 +88,13 @@ int LoadImages();  //画像読み込み
 void Player();  //自機操作
 void Stage();  //ステージ
 void Sky(void); //空
-void Enemy(void); //敵
 void Sousa(void); // 操作
 void Jump(void); //ジャンプ
 void Walk(void);
-void Enemy(void); //敵
+
+int HitBoxPlayer(ENEMY*e);
+
+Enemy enemy;
 
 /***********************************************
  * プログラム開始
@@ -115,8 +120,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             PLAYER_MAP[i][j] = 0;
         }
     }
-    PLAYER_MAP[g_playery / 30][g_playerx / 30] = 1;
-    PLAYER_MAP[(g_playery / 30) + 1][g_playerx / 30] = 1;
+    /*PLAYER_MAP[g_playery / 30][g_playerx / 30] = 1;
+    PLAYER_MAP[(g_playery / 30) + 1][g_playerx / 30] = 1;*/
 
     while (ProcessMessage() == 0)
     {
@@ -126,6 +131,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         Stage();
         Player();
         Sousa();
+        enemy.EnemyMove();
+        enemy.EnemyDraw();
 
         ScreenFlip();         //裏画面の内容を表画面に反映
     }
@@ -264,6 +271,11 @@ void Walk(void)
         else g_playerx = ((g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
         g_playery += 6; //足元が穴なら落ちる
     }
+    HitBoxPlayer(&enemy.g_enemy);
+    if (enemy.g_enemy.flg == TRUE) {
+       if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH, g_direction = TRUE,enemy.g_enemy.flg=FALSE; //プレイヤーがめり込んでるかもしれないからx座標を調整する
+            else  g_playerx = ((g_playerx / BLOCK_WIDTH) + 1) * BLOCK_WIDTH, g_direction = FALSE, enemy.g_enemy.flg = FALSE;
+    }
 
     //DrawFormatString(300, 300, 0xffffff, "%d アングル", g_jump_endy);
 }
@@ -325,6 +337,25 @@ void Jump(void)
     //DrawFormatString(300, 300, 0xffffff, "%d アングル", g_jump_endy);
 }
 
+int HitBoxPlayer(ENEMY*e) {
+
+    int sx1 = g_playerx;
+    int sy1 = g_playery;
+    int sx2 = sx1 + g_player_width;
+    int sy2 = sy1 + g_player_hight;
+
+    int dx1 = e->x;
+    int dy1 = e->y;
+    int dx2 = dx1 + 48;
+    int dy2 = dy1 + 60;
+
+    //短形が重なっていればあたり
+    if (sx1 < dx2 && dx1 < sx2 && sy1 < dy2 && dy1 < sy2) {
+        enemy.g_enemy.flg = TRUE;
+    }
+    return FALSE;
+}
+
 
 /***********************************************
 * 画像読み込み
@@ -335,8 +366,18 @@ int LoadImages()
     if ((g_cursor_image = LoadGraph("images/cursor .png")) == -1) return -1;
     if (LoadDivGraph("images/block/stage3.png", 5, 5, 1, 30, 30, g_block_image) == -1) return -1;
     if (LoadDivGraph("images/player/human.png", 4, 4, 1, 30, 60, g_player_image) == -1) return -1;
-    if (LoadDivGraph("images/hone.png", 6, 3, 2, 48, 60, g_EnemyImage) == -1) return -1;
+    if (LoadDivGraph("images/hone.png", 6, 3, 2, 48, 60, img_Enemy) == -1) return -1;
 }
 
 
-
+int GetArrayImages(int type, int num) {
+    switch (type)
+    {
+    case EnemyImages:
+        if (0 <= num && num <= 6) {
+            return img_Enemy[num];
+        }
+        else { return -1; }
+        break;
+    }
+}
