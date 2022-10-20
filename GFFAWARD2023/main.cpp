@@ -53,6 +53,20 @@ int g_playerx_radius = 30 / 2;
 int g_playery_radius = 60 / 2;
 int g_EnemyImage[6];
 
+
+bool g_Edirection = false; //false = 右向き　true = 左向き
+int g_enemy_image[4];
+int g_enemyx = 6 * 120;
+int g_enemyy = 7 * 70;
+int g_enemy_hight = 60;
+int g_enemy_width = 30;
+int g_enemy_speed = 2;
+int g_enemy_angle = 0;
+int g_enemy_image_type = 0;
+int g_enemyx_radius = 30 / 2;
+int g_enemyy_radius = 60 / 2;
+
+
 unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -70,12 +84,13 @@ unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
         {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
 };
 unsigned int PLAYER_MAP[MAP_HIGHT][MAP_WIDTH];
+unsigned int ENEMY_MAP[MAP_HIGHT][MAP_WIDTH];
 unsigned int ITEM_MAP[MAP_HIGHT][MAP_WIDTH];
 unsigned int MAP_DATA[MAP_HIGHT][MAP_WIDTH];
 
@@ -89,8 +104,9 @@ void  UI(void); //UI
 void Enemy(void); //敵
 void Sousa(void); // 操作
 void Jump(void); //ジャンプ
+void Hit(void); //敵との接触
 void Walk(void);
-void Enemy(void); //敵
+
 
 /***********************************************
  * プログラム開始
@@ -129,7 +145,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         Sousa();
         Stage();
         Player();
-        
+        Enemy();
         UI();
 
         ScreenFlip();         //裏画面の内容を表画面に反映
@@ -396,6 +412,57 @@ void Jump(void)
     //DrawFormatString(300, 300, 0xffffff, "%d アングル", g_jump_endy);
 }
 
+void Hit(void)
+{
+
+}
+
+void Enemy()
+{
+    if ((MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][g_enemyx / BLOCK_WIDTH] > 0 && g_Edirection == FALSE) ||
+        (MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH] > 0 && g_Edirection == TRUE))//足元が穴じゃなければ
+    {
+        g_enemyy = (g_enemyy / BLOCK_WIDTH) * BLOCK_WIDTH;
+
+        if ((g_Edirection == FALSE && MAP_DATA[g_enemyy / BLOCK_WIDTH][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH] > 0 || MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 1][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH] > 0) ||
+            (g_Edirection == TRUE && MAP_DATA[g_enemyy / BLOCK_WIDTH][g_enemyx / BLOCK_WIDTH] > 0 || MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 1][g_enemyx / BLOCK_WIDTH] > 0))
+        {
+            if (g_Edirection == FALSE)g_enemyx = (g_enemyx / BLOCK_WIDTH) * BLOCK_WIDTH, g_Edirection = TRUE; //プレイヤーがめり込んでるかもしれないからx座標を調整する
+            else  g_enemyx = ((g_enemyx / BLOCK_WIDTH) + 1) * BLOCK_WIDTH, g_Edirection = FALSE;
+        }
+        else
+        {
+            if (g_Edirection == FALSE)g_enemyx += g_enemy_speed;
+            else g_enemyx -= g_enemy_speed;
+        }
+    }
+    else
+    {
+        if (g_Edirection == FALSE)g_enemyx = (g_enemyx / BLOCK_WIDTH) * BLOCK_WIDTH;
+        else g_enemyx = ((g_enemyx + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
+        g_enemyy += 6; //足元が穴なら落ちる
+    }
+
+    if ((g_enemyy / 30) + 1 < MAP_HIGHT)
+    {
+        ENEMY_MAP[g_enemyy / 30][g_enemyx / 30] = 1;
+        ENEMY_MAP[(g_enemyy / 30) + 1][g_enemyx / 30] = 1;
+        ENEMY_MAP[g_enemyy / 30][g_enemyx / 30 + 1] = 2;
+        ENEMY_MAP[(g_enemyy / 30) + 1][g_enemyx / 30 + 1] = 2;
+    }
+
+    g_image_time++;
+    if (g_image_time >= 8)
+    {
+        g_enemy_image_type++;
+        g_image_time = 0;
+        if (g_enemy_image_type >= 4)g_enemy_image_type = 0;
+    }
+
+    DrawFormatString(0, 500, 0xffffff, "x = %d", g_enemyy / 30);
+    DrawRotaGraph(g_enemyx + g_enemyx_radius, g_enemyy + g_enemyy_radius, 1.0, M_PI / 180 * 0, g_enemy_image[g_enemy_image_type], TRUE, g_Edirection);
+    DrawPixel(g_enemyx, g_enemyy, 0xffffff);
+}
 
 /***********************************************
 * 画像読み込み
@@ -409,7 +476,7 @@ int LoadImages()
 
     if (LoadDivGraph("images/block/stage3.png", 5, 5, 1, 30, 30, g_block_image) == -1) return -1;
     if (LoadDivGraph("images/player/human.png", 4, 4, 1, 30, 60, g_player_image) == -1) return -1;
-    if (LoadDivGraph("images/hone.png", 6, 3, 2, 48, 60, g_EnemyImage) == -1) return -1;
+    if (LoadDivGraph("images/hone.png", 4, 4, 1, 30, 60, g_enemy_image) == -1) return -1;
 }
 
 
