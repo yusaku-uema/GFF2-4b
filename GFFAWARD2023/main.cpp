@@ -155,7 +155,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     return 0;  //ソフトの終了
 }
 
-
 /***********************************************
 * UI
 ***********************************************/
@@ -445,10 +444,7 @@ void Enemy()
         else g_enemyx = ((g_enemyx + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
         g_enemyy += 6; //足元が穴なら落ちる
     }
-    if (HitBoxPlayer() == TRUE) {
-        if (g_Edirection == FALSE)g_enemyx = (g_enemyx / BLOCK_WIDTH) * BLOCK_WIDTH, g_Edirection = TRUE; //プレイヤーがめり込んでるかもしれないからx座標を調整する
-        else  g_enemyx = ((g_enemyx / BLOCK_WIDTH) + 1) * BLOCK_WIDTH, g_Edirection = FALSE;
-    }
+   
     if ((g_enemyy / 30) + 1 < MAP_HIGHT)
     {
         ENEMY_MAP[g_enemyy / 30][g_enemyx / 30] = 1;
