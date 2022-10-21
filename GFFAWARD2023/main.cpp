@@ -6,6 +6,9 @@
 #define MAP_HIGHT 20
 #define MAP_WIDTH 86
 
+#define DRAW_MAP_HIGHT 20
+#define DRAW_MAP_WIDTH 35
+
 #define BLOCK_WIDTH 30
 //#define PLAYER_HIGHT 30
 
@@ -19,6 +22,8 @@ int g_player_image[4];
 int g_cursor_image;
 int g_white_image;
 int g_jump_image;
+
+int g_stage_count = 0;
 
 int g_player_hit_lowerbody_front = 0; //ÉvÉåÉCÉÑÅ[Ç™ìñÇΩÇ¡ÇΩè·äQï®
 int g_player_hit_upperbody_front = 0;
@@ -80,7 +85,7 @@ unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
+        {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
         {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
 };
 unsigned int PLAYER_MAP[MAP_HIGHT][MAP_WIDTH];
@@ -167,8 +172,14 @@ void Stage()
     {
         for (int j = 0; j < MAP_WIDTH; j++)
         {
-            if(MAP_DATA[i][j] < 10)DrawGraph((30 * j) - g_stage_x, 30 * i , g_block_image[MAP_DATA[i][j]], TRUE);
-            else DrawGraph((30 * j) - g_stage_x, 30 * i, g_jump_image, TRUE);
+            SetDrawArea(115, 0, 1165, 600);
+            if(MAP_DATA[i][j] < 10)DrawGraph(115 + (30 * j) - g_stage_x, 30 * i , g_block_image[MAP_DATA[i][j]], TRUE);
+            else DrawGraph(115 + (30 * j)- g_stage_x, 30 * i, g_jump_image, TRUE);
+            DrawGraph(115 + (30 * g_cursorx), 30 * g_cursory, g_cursor_image, TRUE);
+
+            
+            SetDrawArea(0, 0, 1280, 720);
+
 
             DrawFormatString(14 * j, 14 * i, 0xffffff, "%d", MAP_DATA[i][j]);
             //DrawLine(0, 30 * i, MAP_WIDTH * 30, 30 * i, 0xffffff, TRUE);
@@ -181,16 +192,14 @@ void Stage()
     {
         g_stage_x += 10;
 
-        if (g_stage_x > (42 * BLOCK_WIDTH))
+        if (g_stage_x > ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH))
         {
             g_stage_scroll = FALSE;
-            g_stage_x = (42 * BLOCK_WIDTH);
-            g_cursorx += 42;
+            g_stage_x = ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH);
+            g_stage_count++;
+            //g_cursorx = g_cursorx + 35;
         }
-
     }
-
-    DrawGraph(30 * (g_cursorx), 30 * g_cursory, g_cursor_image, TRUE);
 }
 
 void Sousa(void)
@@ -219,9 +228,9 @@ void Sousa(void)
         {
             g_cursor_speed = 0;
             if (g_now_key == PAD_INPUT_LEFT && g_cursorx > 0)g_cursorx--;
-            if (g_now_key == PAD_INPUT_RIGHT && g_cursorx < 42)g_cursorx++;
+            if (g_now_key == PAD_INPUT_RIGHT && g_cursorx < DRAW_MAP_WIDTH - 1)g_cursorx++;
             if (g_now_key == PAD_INPUT_UP && g_cursory > 0)g_cursory--;
-            if (g_now_key == PAD_INPUT_DOWN && g_cursory < 19)g_cursory++;
+            if (g_now_key == PAD_INPUT_DOWN && g_cursory < DRAW_MAP_HIGHT - 1)g_cursory++;
         }
        
         g_old_key = g_now_key;
@@ -231,10 +240,10 @@ void Sousa(void)
     {
         if (g_AKey == FALSE)
         {
-            if (MAP_DATA[g_cursory][g_cursorx] == 0 && PLAYER_MAP[g_cursory][g_cursorx] == 0)
+            if (MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] == 0 && PLAYER_MAP[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] == 0)
             {
-                if(g_uicursorx == 1 && MAP_DATA[g_cursory + 1][g_cursorx] > 0 && MAP_DATA[g_cursory + 1][g_cursorx] < 10) MAP_DATA[g_cursory][g_cursorx] = 10;
-                if (g_uicursorx == 0 && MAP_DATA[g_cursory][g_cursorx] == 0) MAP_DATA[g_cursory][g_cursorx] = 2;
+                if(g_uicursorx == 1 && MAP_DATA[g_cursory + 1][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] > 0 && MAP_DATA[g_cursory + 1][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] < 10) MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] = 10;
+                if (g_uicursorx == 0 && MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] == 0) MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] = 2;
             }
             //else if (MAP_DATA[g_cursory][g_cursorx] != 0)MAP_DATA[g_cursory][g_cursorx] = 0;
         }
@@ -313,8 +322,7 @@ void Player()
     }
 
     DrawFormatString(0, 500, 0xffffff, "x = %d", g_playery / 30);
-    DrawRotaGraph((g_playerx + 15) - g_stage_x, g_playery + 30, 1.0, M_PI / 180 * 0, g_player_image[g_player_image_type], TRUE, g_direction);
-    DrawPixel(g_playerx, g_playery, 0xffffff);
+    DrawRotaGraph(115 + (g_playerx + 15) - g_stage_x, g_playery + 30, 1.0, M_PI / 180 * 0, g_player_image[g_player_image_type], TRUE, g_direction);
 }
 
 void Walk(void)
@@ -327,8 +335,6 @@ void Walk(void)
         {
             if (g_direction == FALSE)g_playerx += g_player_speed; //è·äQï®Ç…ìñÇΩÇ¡ÇƒÇ»Ç©Ç¡ÇΩÇÁêiÇﬁ
             else g_playerx -= g_player_speed;
-
-            DrawFormatString(0, 350, 0xffffff, "ï‡Ç¢ÇƒÇ‹Ç∑ %d", g_player_hit_lowerbody_front);
         }
         else
         {
