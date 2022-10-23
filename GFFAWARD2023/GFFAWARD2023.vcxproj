@@ -152,27 +152,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="End.cpp" />
-    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="map.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="tamesi.cpp" />
     <ClCompile Include="Title.cpp" />
-    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
     <ClInclude Include="End.h" />
-    <ClInclude Include="Enemy.h" />
     <ClInclude Include="GameMain.h" />
-    <ClInclude Include="map.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Title.h" />
-    <ClInclude Include="define.h" />
-    <ClInclude Include="UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

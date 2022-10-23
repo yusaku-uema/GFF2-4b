@@ -20,3 +20,4 @@ AbstractScene* End::Update()
 void End::Draw() const
 {
 	DrawGraph(0, 0, g_end_image, FALSE);
+}
