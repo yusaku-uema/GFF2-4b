@@ -104,7 +104,7 @@ public:
     int LoadImages();  //画像読み込み
     void PlayerMove();  //自機操作
     void PlayerDraw()const;
-    void Stage();  //ステージ
+    void Stage()const;  //ステージ
     void  UI(void)const; //UI
     void Enemy(void); //敵
     void Sousa(void); // 操作

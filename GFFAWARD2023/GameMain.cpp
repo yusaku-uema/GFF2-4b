@@ -8,7 +8,7 @@ GameMain::GameMain()
 
 AbstractScene* GameMain::Update()
 {
-    Stage();
+
     PlayerMove();
     LoadImages();
 	return this;
@@ -17,6 +17,7 @@ AbstractScene* GameMain::Update()
 void GameMain::Draw()const
 {
     /*Stage();*/
+    Stage();
     PlayerDraw();
     UI();
 }
@@ -39,7 +40,7 @@ void GameMain::UI(void)const
 /***********************************************
 * ステージ描画
 ***********************************************/
-void GameMain::Stage()
+void GameMain::Stage()const
 {
     SetDrawArea(115, 0, 1165, 600);
 
