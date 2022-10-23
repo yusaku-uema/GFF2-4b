@@ -6,3 +6,4 @@
 #define DRAW_MAP_WIDTH 35
 
 #define BLOCK_WIDTH 30
+#define _USE_MATH_DEFINES

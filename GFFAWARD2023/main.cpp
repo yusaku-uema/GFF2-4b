@@ -1,7 +1,4 @@
 #include"DxLib.h"
-#define _USE_MATH_DEFINES
-#include <math.h>
-#include"stdlib.h"
 #include"SceneManager.h"
 #include"Title.h"
 #include"GameMain.h"
@@ -9,7 +6,8 @@
 /***********************************************
  * プログラム開始
  ***********************************************/
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+    LPSTR lpCmdLine, int nCmdShow)
 {
     SetMainWindowText("ゲーム");  //タイトルを設定
 
@@ -17,8 +15,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     ChangeWindowMode(TRUE);		               // ウィンドウモードで起動
 
     if (DxLib_Init() == -1) return -1;	   // DXライブラリの初期化処理
-    SceneManager* sceneMng;
     SetDrawScreen(DX_SCREEN_BACK);	           // 描画先画面を裏にする
+    SceneManager* sceneMng;
     try
     {
         sceneMng = new SceneManager((AbstractScene*)new Title());
