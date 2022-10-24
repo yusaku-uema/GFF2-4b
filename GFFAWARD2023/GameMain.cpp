@@ -8,7 +8,7 @@ GameMain::GameMain()
 
 AbstractScene* GameMain::Update()
 {
-
+    Sousa();
     PlayerMove();
     LoadImages();
 	return this;
@@ -17,10 +17,59 @@ AbstractScene* GameMain::Update()
 void GameMain::Draw()const
 {
     /*Stage();*/
-    Stage();
+  /*  Stage();*/
     PlayerDraw();
     UI();
 }
+
+/***********************************************
+* ステージ描画
+***********************************************/
+//void GameMain::Stage()const
+//{
+//    SetDrawArea(115, 0, 1165, 600);
+//
+//    DrawGraph(0 - (g_stage_x / 5), 0, g_haikei_image, FALSE);
+//
+//    for (int i = 0; i < MAP_HIGHT; i++)
+//    {
+//        for (int j = 0; j < MAP_WIDTH; j++)
+//        {
+//
+//            PLAYER_MAP[i][j] = 0;
+//            if (MAP_DATA[i][j] != 0)
+//            {
+//                if (MAP_DATA[i][j] < 10)DrawGraph(115 + (30 * j) - g_stage_x, 30 * i, g_block_image[MAP_DATA[i][j]], TRUE);
+//                else DrawGraph(115 + (30 * j) - g_stage_x, 30 * i, g_item_image[MAP_DATA[i][j] - 10], TRUE);
+//            }
+//            DrawGraph(115 + (30 * g_cursorx), 30 * g_cursory, g_cursor_image, TRUE);
+//
+//
+//
+//
+//            //DrawFormatString(14 * j, 14 * i, 0xffffff, "%d", MAP_DATA[i][j]);
+//            //DrawLine(0, 30 * i, MAP_WIDTH * 30, 30 * i, 0xffffff, TRUE);
+//            //DrawLine(30 * j, 0, 30 * j, MAP_HIGHT * 30, 0xffffff, TRUE);
+//     
+//        }
+//    }
+//
+//
+//    SetDrawArea(0, 0, 1280, 720);
+//
+//    if (g_stage_scroll == TRUE)
+//    {
+//        g_stage_x += 10;
+//
+//        if (g_stage_x > ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH))
+//        {
+//            g_stage_scroll = FALSE;
+//            g_stage_x = ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH);
+//            g_stage_count++;
+//            //g_cursorx = g_cursorx + 35;
+//        }
+//    }
+//}
 /***********************************************
 * UI
 ***********************************************/
@@ -36,56 +85,6 @@ void GameMain::UI(void)const
         if (i == g_uicursorx)DrawRotaGraph(490 + (150 * i), 660, 3.3, M_PI / 180 * 0, g_cursor_image, TRUE, FALSE);
     }
 }
-
-/***********************************************
-* ステージ描画
-***********************************************/
-void GameMain::Stage()const
-{
-    SetDrawArea(115, 0, 1165, 600);
-
-    DrawGraph(0 - (g_stage_x / 5), 0, g_haikei_image, FALSE);
-
-    for (int i = 0; i < MAP_HIGHT; i++)
-    {
-        for (int j = 0; j < MAP_WIDTH; j++)
-        {
-
-
-            if (MAP_DATA[i][j] != 0)
-            {
-                if (MAP_DATA[i][j] < 10)DrawGraph(115 + (30 * j) - g_stage_x, 30 * i, g_block_image[MAP_DATA[i][j]], TRUE);
-                else DrawGraph(115 + (30 * j) - g_stage_x, 30 * i, g_item_image[MAP_DATA[i][j] - 10], TRUE);
-            }
-            DrawGraph(115 + (30 * g_cursorx), 30 * g_cursory, g_cursor_image, TRUE);
-
-
-
-
-            //DrawFormatString(14 * j, 14 * i, 0xffffff, "%d", MAP_DATA[i][j]);
-            //DrawLine(0, 30 * i, MAP_WIDTH * 30, 30 * i, 0xffffff, TRUE);
-            //DrawLine(30 * j, 0, 30 * j, MAP_HIGHT * 30, 0xffffff, TRUE);
-            PLAYER_MAP[i][j] = 0;
-        }
-    }
-
-
-    SetDrawArea(0, 0, 1280, 720);
-
-    if (g_stage_scroll == TRUE)
-    {
-        g_stage_x += 10;
-
-        if (g_stage_x > ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH))
-        {
-            g_stage_scroll = FALSE;
-            g_stage_x = ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH);
-            g_stage_count++;
-            //g_cursorx = g_cursorx + 35;
-        }
-    }
-}
-
 void GameMain::Sousa(void)
 {
     if (!(GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_LEFT) &&
