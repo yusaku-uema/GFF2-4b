@@ -22,7 +22,7 @@ int g_player_image[4];
 int g_cursor_image;
 int g_white_image;
 int g_jump_image;
-
+int g_Titleimage;
 int g_stage_count = 0;
 
 int g_player_hit_lowerbody_front = 0; //ÉvÉåÉCÉÑÅ[Ç™ìñÇΩÇ¡ÇΩè·äQï®
@@ -160,6 +160,7 @@ void UI(void)
        if(i == 1) DrawRotaGraph(515 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_jump_image, TRUE, FALSE);
        if (i == 0) DrawRotaGraph(515 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_block_image[2], TRUE, FALSE);
        if(i == g_uicursorx)DrawRotaGraph(515 + (150 * i), 660, 3.3, M_PI / 180 * 0, g_cursor_image, TRUE, FALSE);
+
     }
 }
 
@@ -421,10 +422,12 @@ int LoadImages()
     if ((g_cursor_image = LoadGraph("images/cursor mini.png")) == -1) return -1;
     if ((g_white_image = LoadGraph("images/white.png")) == -1) return -1;
     if ((g_jump_image = LoadGraph("images/jump.png")) == -1) return -1;
+    //if ((g_Titleimage = LoadGraph("images/street003_day.png")) == -1)return -1;
 
     if (LoadDivGraph("images/block/stage3.png", 5, 5, 1, 30, 30, g_block_image) == -1) return -1;
     if (LoadDivGraph("images/player/human.png", 4, 4, 1, 30, 60, g_player_image) == -1) return -1;
     if (LoadDivGraph("images/hone.png", 6, 3, 2, 48, 60, g_EnemyImage) == -1) return -1;
+
 }
 
 
