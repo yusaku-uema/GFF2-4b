@@ -17,12 +17,13 @@
  ***********************************************/
 
 int g_block_image[5];
-int g_item_image;
+int g_item_image[2];
 int g_player_image[4];
 int g_cursor_image;
 int g_white_image;
-int g_jump_image;
-int g_Titleimage;
+//int g_jump_image;
+int g_haikei_image;
+
 int g_stage_count = 0;
 
 int g_player_hit_lowerbody_front = 0; //プレイヤーが当たった障害物
@@ -65,6 +66,8 @@ int g_jump_angle = 0;
 int g_playerx_radius = 30 / 2;
 int g_playery_radius = 60 / 2;
 int g_EnemyImage[6];
+
+bool g_forcedtermination = false; // 強制終了
 
 unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -131,7 +134,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     PLAYER_MAP[g_playery / 30][g_playerx / 30] = 1;
     PLAYER_MAP[(g_playery / 30) + 1][g_playerx / 30] = 1;
 
-    while (ProcessMessage() == 0)
+    while (ProcessMessage() == 0 && g_forcedtermination != true)
     {
         ClearDrawScreen();  //画面の初期化
 
@@ -143,6 +146,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         UI();
 
         ScreenFlip();         //裏画面の内容を表画面に反映
+
+        if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_7){ //BACK押すと強制終了
+            g_forcedtermination = true;
+         }
     }
 
     DxLib_End();  //DXライブラリ使用の終了処理
@@ -156,11 +163,12 @@ void UI(void)
 {
     for (int i = 0; i < 3; i++)
     {
-        DrawRotaGraph(515 + (150 * i), 660, 1.0, M_PI / 180 * 0, g_white_image, TRUE, FALSE);
-       if(i == 1) DrawRotaGraph(515 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_jump_image, TRUE, FALSE);
-       if (i == 0) DrawRotaGraph(515 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_block_image[2], TRUE, FALSE);
-       if(i == g_uicursorx)DrawRotaGraph(515 + (150 * i), 660, 3.3, M_PI / 180 * 0, g_cursor_image, TRUE, FALSE);
+        DrawRotaGraph(490 + (150 * i), 660, 1.0, M_PI / 180 * 0, g_white_image, TRUE, FALSE);
+       if(i == 1) DrawRotaGraph(490 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_item_image[0], TRUE, FALSE);
+       if (i == 0) DrawRotaGraph(490 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_block_image[2], TRUE, FALSE);
+       if (i == 2) DrawRotaGraph(490 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_item_image[1], TRUE, FALSE);
 
+       if(i == g_uicursorx)DrawRotaGraph(490 + (150 * i), 660, 3.3, M_PI / 180 * 0, g_cursor_image, TRUE, FALSE);
     }
 }
 
@@ -169,25 +177,35 @@ void UI(void)
 ***********************************************/
 void Stage()
 {
+    SetDrawArea(115, 0, 1165, 600);
+
+    DrawGraph(0 - (g_stage_x / 5), 0, g_haikei_image, FALSE);
+
     for (int i = 0; i < MAP_HIGHT; i++)
     {
         for (int j = 0; j < MAP_WIDTH; j++)
         {
-            SetDrawArea(115, 0, 1165, 600);
-            if(MAP_DATA[i][j] < 10)DrawGraph(115 + (30 * j) - g_stage_x, 30 * i , g_block_image[MAP_DATA[i][j]], TRUE);
-            else DrawGraph(115 + (30 * j)- g_stage_x, 30 * i, g_jump_image, TRUE);
+            
+
+            if (MAP_DATA[i][j] != 0)
+            {
+                if (MAP_DATA[i][j] < 10)DrawGraph(115 + (30 * j) - g_stage_x, 30 * i, g_block_image[MAP_DATA[i][j]], TRUE);
+                else DrawGraph(115 + (30 * j) - g_stage_x, 30 * i, g_item_image[MAP_DATA[i][j] - 10], TRUE);
+            }
             DrawGraph(115 + (30 * g_cursorx), 30 * g_cursory, g_cursor_image, TRUE);
 
             
-            SetDrawArea(0, 0, 1280, 720);
 
 
-            DrawFormatString(14 * j, 14 * i, 0xffffff, "%d", MAP_DATA[i][j]);
+            //DrawFormatString(14 * j, 14 * i, 0xffffff, "%d", MAP_DATA[i][j]);
             //DrawLine(0, 30 * i, MAP_WIDTH * 30, 30 * i, 0xffffff, TRUE);
             //DrawLine(30 * j, 0, 30 * j, MAP_HIGHT * 30, 0xffffff, TRUE);
             PLAYER_MAP[i][j] = 0;
         }
     }
+
+
+    SetDrawArea(0, 0, 1280, 720);
 
     if (g_stage_scroll == TRUE)
     {
@@ -246,6 +264,9 @@ void Sousa(void)
                 if(g_uicursorx == 1 && MAP_DATA[g_cursory + 1][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] > 0 && MAP_DATA[g_cursory + 1][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] < 10) MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] = 10;
                 if (g_uicursorx == 0 && MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] == 0) MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] = 2;
             }
+
+            if (g_uicursorx == 2 && (MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] == 2 || MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] == 10)) MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] = 0;
+
             //else if (MAP_DATA[g_cursory][g_cursorx] != 0)MAP_DATA[g_cursory][g_cursorx] = 0;
         }
         g_AKey = TRUE;
@@ -298,7 +319,7 @@ void Player()
         if ((g_player_hit_lowerbody_back == 10) || g_jump > 0)Jump();
         else Walk();
 
-        if (g_player_hit_under_back == 3 && g_stage_x == 0)
+        if (115 + (g_playerx + 15) - g_stage_x >= 1155)
         {
             g_stage_scroll = TRUE;
             if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;
@@ -421,12 +442,13 @@ int LoadImages()
     //if ((g_player_image = LoadGraph("images/human.png")) == -1) return -1;
     if ((g_cursor_image = LoadGraph("images/cursor mini.png")) == -1) return -1;
     if ((g_white_image = LoadGraph("images/white.png")) == -1) return -1;
-    if ((g_jump_image = LoadGraph("images/jump.png")) == -1) return -1;
-    //if ((g_Titleimage = LoadGraph("images/street003_day.png")) == -1)return -1;
+    //if ((g_jump_image = LoadGraph("images/jump.png")) == -1) return -1;
+    if ((g_haikei_image = LoadGraph("images/haikei.jpg")) == -1) return -1;
 
     if (LoadDivGraph("images/block/stage3.png", 5, 5, 1, 30, 30, g_block_image) == -1) return -1;
     if (LoadDivGraph("images/player/human.png", 4, 4, 1, 30, 60, g_player_image) == -1) return -1;
-    if (LoadDivGraph("images/hone.png", 6, 3, 2, 48, 60, g_EnemyImage) == -1) return -1;
+    if (LoadDivGraph("images/hone.png", 4, 4, 1, 30, 60, g_EnemyImage) == -1) return -1;
+    if (LoadDivGraph("images/item.png", 2, 2, 1, 30, 30, g_item_image) == -1) return -1;
 
 }
 
