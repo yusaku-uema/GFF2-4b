@@ -47,7 +47,7 @@ int g_now_key = 0;
 
 bool g_AKey = FALSE;
 bool g_direction = false; //false = 右向き　true = 左向き
-int g_playerx = 20 * 30;
+int g_playerx = 1 * 30;
 int g_playery = 7 * 30;
 
 int g_player_speed = 1;
@@ -65,8 +65,27 @@ int g_jump_angle = 0;
 
 int g_playerx_radius = 30 / 2;
 int g_playery_radius = 60 / 2;
-int g_EnemyImage[6];
 
+int g_EnemyImage[4];
+
+int g_enemy_hit_lowerbody_front = 0; //プレイヤーが当たった障害物
+int g_enemy_hit_upperbody_front = 0;
+int g_enemy_hit_lowerbody_back = 0; //プレイヤーが当たった障害物
+int g_enemy_hit_upperbody_back = 0;
+int g_enemy_hit_under_back = 1;
+int g_enemy_hit_under_front = 1;
+bool g_Edirection = true; //false = 右向き　true = 左向き
+int g_enemy_image[4];
+int g_enemyx = 6 * 120;
+int g_enemyy = 7 * 70;
+int g_enemy_hight = 60;
+int g_enemy_width = 30;
+int g_enemy_speed = 1;
+int g_enemy_angle = 0;
+int g_enemy_image_type = 0;
+int g_enemyx_radius = 30 / 2;
+int g_enemyy_radius = 60 / 2;
+int g_enemy_time = 0;
 unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -84,12 +103,13 @@ unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
         {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
 };
 unsigned int PLAYER_MAP[MAP_HIGHT][MAP_WIDTH];
+unsigned int ENEMY_MAP[MAP_HIGHT][MAP_WIDTH];
 unsigned int MAP_DATA[MAP_HIGHT][MAP_WIDTH];
 
 /***********************************************
@@ -103,7 +123,7 @@ void Enemy(void); //敵
 void Sousa(void); // 操作
 void Jump(void); //ジャンプ
 void Walk(void);
-void Enemy(void); //敵
+
 
 /***********************************************
  * プログラム開始
@@ -140,7 +160,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         if (g_stage_scroll == FALSE)Sousa();
         Stage();
         Player();
-        
+        Enemy();
         UI();
 
         ScreenFlip();         //裏画面の内容を表画面に反映
@@ -365,7 +385,6 @@ void Walk(void)
         g_playery += 5; //キャラを落とす
     }
     
-    //DrawFormatString(300, 300, 0xffffff, "%d アングル", g_jump_endy);
 }
 
 void Jump(void)
@@ -426,7 +445,69 @@ void Jump(void)
 
     //DrawFormatString(300, 300, 0xffffff, "%d アングル", g_jump_endy);
 }
+void Enemy()
+{
+    if (g_Edirection == FALSE)
+    {
+        g_enemy_hit_under_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][g_enemyx / BLOCK_WIDTH];
+        g_enemy_hit_under_front = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
+        g_enemy_hit_lowerbody_front = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 1][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+        g_enemy_hit_upperbody_front = MAP_DATA[g_enemyy / BLOCK_WIDTH][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+        g_enemy_hit_lowerbody_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 1][g_enemyx / BLOCK_WIDTH];
+        g_enemy_hit_upperbody_back = MAP_DATA[g_enemyy / BLOCK_WIDTH][g_enemyx / BLOCK_WIDTH];
+    }
+    else
+    {
+        g_enemy_hit_under_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
+        g_enemy_hit_under_front = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][g_enemyx / BLOCK_WIDTH];
+        g_enemy_hit_lowerbody_front = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 1][g_enemyx / BLOCK_WIDTH];
+        g_enemy_hit_upperbody_front = MAP_DATA[g_enemyy / BLOCK_WIDTH][g_enemyx / BLOCK_WIDTH];
+        g_enemy_hit_lowerbody_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 1][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+        g_enemy_hit_upperbody_back = MAP_DATA[g_enemyy / BLOCK_WIDTH][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+    }
 
+        if (g_enemy_hit_under_back > 0 && g_enemy_hit_under_back < 10)
+        {
+            g_enemyy = (g_enemyy / BLOCK_WIDTH) * BLOCK_WIDTH; //プレイヤーのy座標を整える
+
+            if ((g_enemy_hit_lowerbody_front == 0 || g_enemy_hit_lowerbody_front >= 10) && (g_enemy_hit_upperbody_front == 0 || g_enemy_hit_upperbody_front >= 10))
+            {
+                if (g_Edirection == FALSE)g_enemyx += g_enemy_speed; //障害物に当たってなかったら進む
+                else g_enemyx -= g_enemy_speed;
+            }
+            else
+            {
+                if (g_Edirection == FALSE)g_enemyx = (g_enemyx / BLOCK_WIDTH) * BLOCK_WIDTH, g_Edirection = TRUE; //プレイヤーがめり込んでるかもしれないからx座標を調整する
+                else  g_enemyx = ((g_enemyx / BLOCK_WIDTH) + 1) * BLOCK_WIDTH, g_Edirection = FALSE;
+            }
+        }
+        else
+        {
+            if (g_Edirection == FALSE)g_enemyx = (g_enemyx / BLOCK_WIDTH) * BLOCK_WIDTH;  //キャラを穴の真ん中にする
+            else g_enemyx = ((g_enemyx + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
+            g_enemyy += 5; //キャラを落とす
+        }
+
+
+        if ((g_enemyy / BLOCK_WIDTH) + 1 < MAP_HIGHT)
+        {
+            ENEMY_MAP[g_enemyy / BLOCK_WIDTH][g_enemyx / BLOCK_WIDTH] = 1;
+            ENEMY_MAP[(g_enemyy / BLOCK_WIDTH) + 1][g_enemyx / BLOCK_WIDTH] = 1;
+            ENEMY_MAP[g_enemyy / BLOCK_WIDTH][g_enemyx / BLOCK_WIDTH + 1] = 2;
+            ENEMY_MAP[(g_enemyy / BLOCK_WIDTH) + 1][g_enemyx / BLOCK_WIDTH + 1] = 2;
+        }
+
+        g_enemy_time++;
+        if (g_enemy_time >= 8)
+        {
+            g_enemy_image_type++;
+            g_enemy_time = 0;
+            if (g_enemy_image_type >= 4)g_enemy_image_type = 0;
+        }
+
+    DrawFormatString(0, 500, 0xffffff, "x = %d", g_enemyy / 30);
+    DrawRotaGraph(115 + (g_enemyx + 15) - g_stage_x, g_enemyy + 30, 1.0, M_PI / 180 * 0, g_enemy_image[g_enemy_image_type], TRUE, g_Edirection);
+}
 
 /***********************************************
 * 画像読み込み
@@ -441,7 +522,7 @@ int LoadImages()
 
     if (LoadDivGraph("images/block/stage3.png", 5, 5, 1, 30, 30, g_block_image) == -1) return -1;
     if (LoadDivGraph("images/player/human.png", 4, 4, 1, 30, 60, g_player_image) == -1) return -1;
-    if (LoadDivGraph("images/hone.png", 4, 4, 1, 30, 60, g_EnemyImage) == -1) return -1;
+    if (LoadDivGraph("images/hone.png", 4, 4, 1, 30, 60, g_enemy_image) == -1) return -1;
     if (LoadDivGraph("images/item.png", 2, 2, 1, 30, 30, g_item_image) == -1) return -1;
 
 }
