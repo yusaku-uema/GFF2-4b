@@ -16,13 +16,15 @@
  * 変数
  ***********************************************/
 
-int g_block_image[5];
+int g_block_image[12];
 int g_item_image[2];
 int g_player_image[4];
 int g_cursor_image;
 int g_white_image;
 //int g_jump_image;
 int g_haikei_image;
+
+int g_block_quantity =20;//ブロック個数
 
 int g_stage_count = 0;
 
@@ -84,8 +86,8 @@ unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,21,0,0,0,0,0,10,0,0,0,0,13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
         {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
 };
@@ -159,7 +161,7 @@ void UI(void)
     {
         DrawRotaGraph(490 + (150 * i), 660, 1.0, M_PI / 180 * 0, g_white_image, TRUE, FALSE);
        if(i == 1) DrawRotaGraph(490 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_item_image[0], TRUE, FALSE);
-       if (i == 0) DrawRotaGraph(490 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_block_image[2], TRUE, FALSE);
+       if (i == 0) DrawRotaGraph(490 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_block_image[1], TRUE, FALSE);
        if (i == 2) DrawRotaGraph(490 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_item_image[1], TRUE, FALSE);
 
        if(i == g_uicursorx)DrawRotaGraph(490 + (150 * i), 660, 3.3, M_PI / 180 * 0, g_cursor_image, TRUE, FALSE);
@@ -183,8 +185,8 @@ void Stage()
 
             if (MAP_DATA[i][j] != 0)
             {
-                if (MAP_DATA[i][j] < 10)DrawGraph(115 + (30 * j) - g_stage_x, 30 * i, g_block_image[MAP_DATA[i][j]], TRUE);
-                else DrawGraph(115 + (30 * j) - g_stage_x, 30 * i, g_item_image[MAP_DATA[i][j] - 10], TRUE);
+                if (MAP_DATA[i][j] <= g_block_quantity)DrawGraph(115 + (30 * j) - g_stage_x, 30 * i, g_block_image[MAP_DATA[i][j]], TRUE);
+                else DrawGraph(115 + (BLOCK_WIDTH * j) - g_stage_x, BLOCK_WIDTH * i, g_item_image[MAP_DATA[i][j] -  (g_block_quantity + 1)], TRUE);
             }
             DrawGraph(115 + (30 * g_cursorx), 30 * g_cursory, g_cursor_image, TRUE);
 
@@ -255,11 +257,11 @@ void Sousa(void)
         {
             if (MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] == 0 && PLAYER_MAP[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] == 0)
             {
-                if(g_uicursorx == 1 && MAP_DATA[g_cursory + 1][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] > 0 && MAP_DATA[g_cursory + 1][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] < 10) MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] = 10;
-                if (g_uicursorx == 0 && MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] == 0) MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] = 2;
+                if(g_uicursorx == 1 && MAP_DATA[g_cursory + 1][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] > 0 && MAP_DATA[g_cursory + 1][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] <= g_block_quantity) MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] = g_block_quantity + 1; //トランポリンを追加
+                if (g_uicursorx == 0 && MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] == 0) MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] = 2; //ブロックを追加
             }
 
-            if (g_uicursorx == 2 && (MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] == 2 || MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] == 10)) MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] = 0;
+            if (g_uicursorx == 2 && (MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] == 2 || MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] == g_block_quantity + 1)) MAP_DATA[g_cursory][g_cursorx + ((DRAW_MAP_WIDTH - 1) * g_stage_count)] = 0; // 消しゴムの処理
 
             //else if (MAP_DATA[g_cursory][g_cursorx] != 0)MAP_DATA[g_cursory][g_cursorx] = 0;
         }
@@ -310,7 +312,7 @@ void Player()
 
     if (g_stage_scroll == FALSE)
     {
-        if ((g_player_hit_lowerbody_back == 10) || g_jump > 0)Jump();
+        if ((g_player_hit_lowerbody_back == g_block_quantity + 1) || g_jump > 0)Jump();
         else Walk();
 
         if (115 + (g_playerx + 15) - g_stage_x >= 1155)
@@ -343,18 +345,18 @@ void Player()
 
 void Walk(void)
 {
-    if (g_player_hit_under_back > 0 && g_player_hit_under_back < 10)
+    if (g_player_hit_under_back > 0 && g_player_hit_under_back <= g_block_quantity)
     {
         g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH; //プレイヤーのy座標を整える
 
-        if ((g_player_hit_lowerbody_front == 0 || g_player_hit_lowerbody_front >= 10) && (g_player_hit_upperbody_front == 0 || g_player_hit_upperbody_front >= 10))
+        if ((g_player_hit_lowerbody_front == 0 || g_player_hit_lowerbody_front > g_block_quantity) && (g_player_hit_upperbody_front == 0 || g_player_hit_upperbody_front > g_block_quantity))
         {
             if (g_direction == FALSE)g_playerx += g_player_speed; //障害物に当たってなかったら進む
             else g_playerx -= g_player_speed;
         }
         else
         {
-            if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH, g_direction = TRUE; //プレイヤーがめり込んでるかもしれないからx座標を調整する
+            if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH, g_direction = TRUE; //プレイヤーのブロックの当たり判定１から９
             else  g_playerx = ((g_playerx / BLOCK_WIDTH) + 1) * BLOCK_WIDTH, g_direction = FALSE;
         }
     }
@@ -390,7 +392,7 @@ void Jump(void)
 
         if (g_jump_angle >= 270 || g_jump_angle <= -90) //ジャンプして、落ち始めたら
         {
-            if (g_player_hit_under_front > 0 && g_player_hit_under_front < 10)
+            if (g_player_hit_under_front > 0 && g_player_hit_under_front <= g_block_quantity)
             {
                 g_jump = 2;
                 g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH; //プレイヤーのｙ座標を整える
@@ -402,7 +404,7 @@ void Jump(void)
                 g_jump = 0;
             }
         }
-        if (g_player_hit_lowerbody_back > 0 && g_player_hit_lowerbody_back < 10)
+        if (g_player_hit_upperbody_back > 0 && g_player_hit_upperbody_back <= g_block_quantity)
         {
             if (g_direction == FALSE)g_playerx = g_playerx / BLOCK_WIDTH * BLOCK_WIDTH;
             else g_playerx = (g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH * BLOCK_WIDTH;
@@ -415,7 +417,7 @@ void Jump(void)
         if (g_direction == FALSE)g_playerx += g_player_speed;
         else g_playerx -= g_player_speed;
 
-        if (g_player_hit_under_back > 0 && g_player_hit_under_back < 10)
+        if (g_player_hit_under_back > 0 && g_player_hit_under_back <= g_block_quantity)
         {
             if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;
             else g_playerx = ((g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
@@ -439,7 +441,7 @@ int LoadImages()
     //if ((g_jump_image = LoadGraph("images/jump.png")) == -1) return -1;
     if ((g_haikei_image = LoadGraph("images/haikei.jpg")) == -1) return -1;
 
-    if (LoadDivGraph("images/block/stage3.png", 5, 5, 1, 30, 30, g_block_image) == -1) return -1;
+    if (LoadDivGraph("images/block/ddd.png", 12, 12, 1, 30, 30, g_block_image) == -1) return -1;
     if (LoadDivGraph("images/player/human.png", 4, 4, 1, 30, 60, g_player_image) == -1) return -1;
     if (LoadDivGraph("images/hone.png", 6, 3, 2, 48, 60, g_EnemyImage) == -1) return -1;
     if (LoadDivGraph("images/item.png", 2, 2, 1, 30, 30, g_item_image) == -1) return -1;
