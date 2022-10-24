@@ -67,6 +67,8 @@ int g_playerx_radius = 30 / 2;
 int g_playery_radius = 60 / 2;
 int g_EnemyImage[6];
 
+bool g_forcedtermination = false; // 強制終了
+
 unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -132,7 +134,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     PLAYER_MAP[g_playery / 30][g_playerx / 30] = 1;
     PLAYER_MAP[(g_playery / 30) + 1][g_playerx / 30] = 1;
 
-    while (ProcessMessage() == 0)
+    while (ProcessMessage() == 0 && g_forcedtermination != true)
     {
         ClearDrawScreen();  //画面の初期化
 
@@ -144,6 +146,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         UI();
 
         ScreenFlip();         //裏画面の内容を表画面に反映
+
+        if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_7){ //BACK押すと強制終了
+            g_forcedtermination = true;
+         }
     }
 
     DxLib_End();  //DXライブラリ使用の終了処理
