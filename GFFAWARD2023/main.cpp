@@ -86,6 +86,7 @@ int g_enemy_image_type = 0;
 int g_enemyx_radius = 30 / 2;
 int g_enemyy_radius = 60 / 2;
 int g_enemy_time = 0;
+bool g_forcedtermination; //強制終了
 unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -152,11 +153,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     PLAYER_MAP[g_playery / 30][g_playerx / 30] = 1;
     PLAYER_MAP[(g_playery / 30) + 1][g_playerx / 30] = 1;
 
-    while (ProcessMessage() == 0)
+    while (ProcessMessage() == 0 && g_forcedtermination != true)
     {
         ClearDrawScreen();  //画面の初期化
 
-        
+
         if (g_stage_scroll == FALSE)Sousa();
         Stage();
         Player();
@@ -164,6 +165,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         UI();
 
         ScreenFlip();         //裏画面の内容を表画面に反映
+        if (GetJoypadInputState(DX_INPUT_PAD1)& PAD_INPUT_7){
+            g_forcedtermination = true;
+        }
     }
 
     DxLib_End();  //DXライブラリ使用の終了処理
@@ -223,14 +227,26 @@ void Stage()
 
     if (g_stage_scroll == TRUE)
     {
-        g_stage_x += 10;
-
-        if (g_stage_x > ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH))
+        if (g_direction == FALSE)
         {
-            g_stage_scroll = FALSE;
-            g_stage_x = ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH);
-            g_stage_count++;
-            //g_cursorx = g_cursorx + 35;
+            g_stage_x += 10;
+            if (g_stage_x > ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH) * (g_stage_count + 1))
+            {
+                g_stage_x = ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH) * (g_stage_count + 1);
+                g_stage_scroll = FALSE;
+                g_stage_count++;
+            }
+        }
+
+        else
+        {
+            g_stage_x -= 10;
+            if (g_stage_x < ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH) * (g_stage_count - 1))
+            {
+                g_stage_x = ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH) * (g_stage_count - 1);
+                g_stage_scroll = FALSE;
+                g_stage_count--;
+            }
         }
     }
 }
@@ -333,7 +349,8 @@ void Player()
         if ((g_player_hit_lowerbody_back == 10) || g_jump > 0)Jump();
         else Walk();
 
-        if (115 + (g_playerx + 15) - g_stage_x >= 1155)
+        if ((g_playerx >= (BLOCK_WIDTH * (DRAW_MAP_WIDTH - 1)) * (g_stage_count + 1) && g_direction == FALSE) ||
+            (g_playerx <= (BLOCK_WIDTH * (DRAW_MAP_WIDTH - 1)) * g_stage_count) && g_direction == TRUE)
         {
             g_stage_scroll = TRUE;
             if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;
