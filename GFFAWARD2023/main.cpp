@@ -124,7 +124,7 @@ void Sousa(void); // 操作
 void Jump(void); //ジャンプ
 void Walk(void);
 
-
+int HitBoxPlayer();
 /***********************************************
  * プログラム開始
  ***********************************************/
@@ -384,7 +384,17 @@ void Walk(void)
         else g_playerx = ((g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
         g_playery += 5; //キャラを落とす
     }
-    
+    if (HitBoxPlayer())
+    {
+        if (g_direction == FALSE)
+        {
+            g_direction = TRUE;
+        }
+        else
+        {
+            g_direction = FALSE;
+        }
+    }
 }
 
 void Jump(void)
@@ -487,7 +497,17 @@ void Enemy()
             else g_enemyx = ((g_enemyx + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
             g_enemyy += 5; //キャラを落とす
         }
-
+        if (HitBoxPlayer())
+        {
+            if (g_Edirection == FALSE)
+            {
+                g_Edirection = TRUE;
+            }
+            else
+            {
+                g_Edirection = FALSE;
+            }
+        }
 
         if ((g_enemyy / BLOCK_WIDTH) + 1 < MAP_HIGHT)
         {
@@ -508,7 +528,24 @@ void Enemy()
     DrawFormatString(0, 500, 0xffffff, "x = %d", g_enemyy / 30);
     DrawRotaGraph(115 + (g_enemyx + 15) - g_stage_x, g_enemyy + 30, 1.0, M_PI / 180 * 0, g_enemy_image[g_enemy_image_type], TRUE, g_Edirection);
 }
+int HitBoxPlayer() {
+    //x,yは中心座標とする
+    int sx1 = g_playerx;
+    int sy1 = g_playery;
+    int sx2 = sx1 + 30;
+    int sy2 = sy1 + 60;
 
+    int dx1 = g_enemyx;
+    int dy1 = g_enemyy;
+    int dx2 = dx1 + 30;
+    int dy2 = dy1 + 60;
+
+    //短形が重なっていればあたり
+    if (sx1 < dx2 && dx1 < sx2 && sy1 < dy2 && dy1 < sy2) {
+        return TRUE;
+    }
+    return FALSE;
+}
 /***********************************************
 * 画像読み込み
 ***********************************************/
