@@ -4,7 +4,7 @@
 
 Title::Title()
 {
-	if ((g_title_image = LoadGraph("images/title.png")) == -1);
+	if ((g_title_image = LoadGraph("images/title1.png")) == -1);
 }
 
 
