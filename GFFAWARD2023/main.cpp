@@ -203,14 +203,26 @@ void Stage()
 
     if (g_stage_scroll == TRUE)
     {
-        g_stage_x += 10;
-
-        if (g_stage_x > ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH))
+        if (g_direction == FALSE)
         {
-            g_stage_scroll = FALSE;
-            g_stage_x = ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH);
-            g_stage_count++;
-            //g_cursorx = g_cursorx + 35;
+            g_stage_x += 10;
+            if (g_stage_x > ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH) * (g_stage_count + 1))
+            {
+                g_stage_x = ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH) * (g_stage_count + 1);
+                g_stage_scroll = FALSE;
+                g_stage_count++;
+            }
+        }
+
+        else
+        {
+            g_stage_x -= 10;
+            if (g_stage_x < ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH) * (g_stage_count - 1))
+            {
+                g_stage_x = ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH) * (g_stage_count - 1);
+                g_stage_scroll = FALSE;
+                g_stage_count--;
+            }
         }
     }
 }
@@ -313,7 +325,8 @@ void Player()
         if ((g_player_hit_lowerbody_back == 10) || g_jump > 0)Jump();
         else Walk();
 
-        if (115 + (g_playerx + 15) - g_stage_x >= 1155)
+        if ((g_playerx >= (BLOCK_WIDTH * (DRAW_MAP_WIDTH - 1)) * (g_stage_count + 1) && g_direction == FALSE) ||
+            (g_playerx <= (BLOCK_WIDTH * (DRAW_MAP_WIDTH - 1)) * g_stage_count) && g_direction == TRUE)
         {
             g_stage_scroll = TRUE;
             if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;
