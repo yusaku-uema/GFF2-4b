@@ -7,6 +7,7 @@ class Title :
 {
 private:
     int g_title_image;
+    int g_drawingtime; //文字描画処理
 public:
     //コンストラクタ
     Title();
