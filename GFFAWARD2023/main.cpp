@@ -499,7 +499,7 @@ void Enemy()
         {
             g_enemyy = (g_enemyy / BLOCK_WIDTH) * BLOCK_WIDTH; //プレイヤーのy座標を整える
 
-            if ((g_enemy_hit_lowerbody_front == 0 || g_enemy_hit_lowerbody_front >= 10) && (g_enemy_hit_upperbody_front == 0 || g_enemy_hit_upperbody_front >= 10))
+            if ((g_enemy_hit_lowerbody_front == 0 || g_enemy_hit_lowerbody_front >= g_block_quantity) && (g_enemy_hit_upperbody_front == 0 || g_enemy_hit_upperbody_front >= g_block_quantity))
             {
                 if (g_Edirection == FALSE)g_enemyx += g_enemy_speed; //障害物に当たってなかったら進む
                 else g_enemyx -= g_enemy_speed;
