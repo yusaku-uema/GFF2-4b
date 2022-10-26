@@ -436,7 +436,18 @@ void Jump(void)
         g_playery = (sin(g_jump_angle * M_PI / 180) * 90) + g_jump_centery; //‰~‚ð•`‚­‚½‚ß‚ÌyÀ•W‚ðŒvŽZ
         g_playerx = (cos(g_jump_angle * M_PI / 180) * 15) + g_jump_centerx; //‰~‚ð•`‚­‚½‚ß‚ÌxÀ•W‚ðŒvŽZ
 
-        if (g_jump_angle >= 270 || g_jump_angle <= -90) //ƒWƒƒƒ“ƒv‚µ‚ÄA—Ž‚¿Žn‚ß‚½‚ç
+        if(g_jump_angle >= 240 || g_jump_angle <= -60)
+        {
+            if ((g_player_hit_upperbody_front > 0 && g_player_hit_upperbody_front <= g_block_quantity) || (g_player_hit_lowerbody_front > 0 && g_player_hit_lowerbody_front <= g_block_quantity))
+            {
+                DrawFormatString(0, 0, 0xffffff, "afhsth");
+                if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;
+                else g_playerx = ((g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
+                g_jump = 0;
+            }
+        }
+
+        if ((g_jump_angle >= 270 || g_jump_angle <= -90) && g_jump > 0) //ƒWƒƒƒ“ƒv‚µ‚ÄA—Ž‚¿Žn‚ß‚½‚ç
         {
             if (g_player_hit_under_front > 0 && g_player_hit_under_front <= g_block_quantity)
             {
@@ -450,7 +461,8 @@ void Jump(void)
                 g_jump = 0;
             }
         }
-        if (g_player_hit_upperbody_back > 0 && g_player_hit_upperbody_back <= g_block_quantity)
+
+        if ((g_player_hit_upperbody_back > 0 && g_player_hit_upperbody_back <= g_block_quantity) && g_jump > 0)
         {
             if (g_direction == FALSE)g_playerx = g_playerx / BLOCK_WIDTH * BLOCK_WIDTH;
             else g_playerx = (g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH * BLOCK_WIDTH;
