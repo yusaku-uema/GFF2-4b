@@ -2,6 +2,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include"stdlib.h"
+#include"UI.h"
 
 #define MAP_HIGHT 20
 #define MAP_WIDTH 86
@@ -104,6 +105,7 @@ void Jump(void); //ジャンプ
 void Walk(void);
 void Enemy(void); //敵
 
+
 /***********************************************
  * プログラム開始
  ***********************************************/
@@ -141,6 +143,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         Player();
         
         UI();
+        ui.UIDraw();
+        ui.ClockNeedleMove();
 
         ScreenFlip();         //裏画面の内容を表画面に反映
     }
@@ -421,6 +425,7 @@ int LoadImages()
     if ((g_cursor_image = LoadGraph("images/cursor mini.png")) == -1) return -1;
     if ((g_white_image = LoadGraph("images/white.png")) == -1) return -1;
     if ((g_jump_image = LoadGraph("images/jump.png")) == -1) return -1;
+    if ((ui.img_clockneedle = LoadGraph("images/clock needle.png")) == -1)return-1;
 
     if (LoadDivGraph("images/block/stage3.png", 5, 5, 1, 30, 30, g_block_image) == -1) return -1;
     if (LoadDivGraph("images/player/human.png", 4, 4, 1, 30, 60, g_player_image) == -1) return -1;
