@@ -212,7 +212,7 @@ void Stage()
                 if (MAP_DATA[i][j] <= g_block_quantity)DrawGraph(115 + (30 * j) - g_stage_x, 30 * i, g_block_image[MAP_DATA[i][j]], TRUE);
                 else DrawGraph(115 + (BLOCK_WIDTH * j) - g_stage_x, BLOCK_WIDTH * i, g_item_image[MAP_DATA[i][j] -  (g_block_quantity + 1)], TRUE);
             }
-            DrawGraph(115 + (30 * g_cursorx), 30 * g_cursory, g_cursor_image, TRUE);
+            if(g_stage_scroll == FALSE)DrawGraph(115 + (30 * g_cursorx), 30 * g_cursory, g_cursor_image, TRUE);
 
             
 
@@ -237,6 +237,8 @@ void Stage()
                 g_stage_x = ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH) * (g_stage_count + 1);
                 g_stage_scroll = FALSE;
                 g_stage_count++;
+
+                g_cursorx = 3, g_cursory = 15;
             }
         }
 
@@ -248,6 +250,8 @@ void Stage()
                 g_stage_x = ((DRAW_MAP_WIDTH - 1) * BLOCK_WIDTH) * (g_stage_count - 1);
                 g_stage_scroll = FALSE;
                 g_stage_count--;
+
+                g_cursorx = 30, g_cursory = 15;
             }
         }
     }
@@ -382,37 +386,40 @@ void Player()
 
 void Walk(void)
 {
-    if (g_player_hit_under_back > 0 && g_player_hit_under_back <= g_block_quantity)
+    if (g_player_hit_under_back > 0 && g_player_hit_under_back <= g_block_quantity) //地面が穴じゃなかったら
     {
         g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH; //プレイヤーのy座標を整える
 
-        if ((g_player_hit_lowerbody_front == 0 || g_player_hit_lowerbody_front > g_block_quantity) && (g_player_hit_upperbody_front == 0 || g_player_hit_upperbody_front > g_block_quantity))
+        if ((g_player_hit_lowerbody_front == 0 || g_player_hit_lowerbody_front > g_block_quantity) && (g_player_hit_upperbody_front == 0 || g_player_hit_upperbody_front > g_block_quantity))//障害物に当たってないとき
         {
-            if (g_direction == FALSE)g_playerx += g_player_speed; //障害物に当たってなかったら進む
+            if (g_direction == FALSE)g_playerx += g_player_speed; 
             else g_playerx -= g_player_speed;
         }
-        else
+        else //障害物に当たった時
         {
-            if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH, g_direction = TRUE; //プレイヤーのブロックの当たり判定１から９
-            else  g_playerx = ((g_playerx / BLOCK_WIDTH) + 1) * BLOCK_WIDTH, g_direction = FALSE;
+            if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;
+            else  g_playerx = ((g_playerx / BLOCK_WIDTH) + 1) * BLOCK_WIDTH;
+
+            if ((MAP_DATA[(g_playery / BLOCK_WIDTH) + 1][(g_playerx + BLOCK_WIDTH) / BLOCK_WIDTH] == 0 || MAP_DATA[g_playery / BLOCK_WIDTH][(g_playerx + BLOCK_WIDTH) / BLOCK_WIDTH] > g_block_quantity) && g_direction == TRUE || //後ろが障害物じゃなかったら
+                (MAP_DATA[(g_playery / BLOCK_WIDTH) + 1][(g_playerx - 1) / BLOCK_WIDTH] == 0 || MAP_DATA[g_playery / BLOCK_WIDTH][(g_playerx - 1) / BLOCK_WIDTH] > g_block_quantity) && g_direction == FALSE)
+            {
+                if (g_direction == FALSE)g_direction = TRUE; //進行方向を逆にする
+                else  g_direction = FALSE;
+            }
         }
     }
+
     else
     {
         if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;  //キャラを穴の真ん中にする
         else g_playerx = ((g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
         g_playery += 5; //キャラを落とす
     }
+
     if (HitBoxPlayer())
     {
-        if (g_direction == FALSE)
-        {
-            g_direction = TRUE;
-        }
-        else
-        {
-            g_direction = FALSE;
-        }
+        if (g_direction == FALSE)g_direction = TRUE;
+        else g_direction = FALSE;
     }
 }
 
