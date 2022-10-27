@@ -27,6 +27,7 @@ int g_haikei_image;
 int g_block_quantity =20;//ブロック個数
 
 int g_stage_count = 0;
+int g_hammer; //ハンマー
 
 int g_player_hit_lowerbody_front = 0; //プレイヤーが当たった障害物
 int g_player_hit_upperbody_front = 0;
@@ -176,18 +177,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     return 0;  //ソフトの終了
 }
 
+
 /***********************************************
 * UI
 ***********************************************/
 void UI(void)
 {
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 4; i++)
     {
         DrawRotaGraph(490 + (150 * i), 660, 1.0, M_PI / 180 * 0, g_white_image, TRUE, FALSE);
        if(i == 1) DrawRotaGraph(490 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_item_image[0], TRUE, FALSE);
        if (i == 0) DrawRotaGraph(490 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_block_image[1], TRUE, FALSE);
        if (i == 2) DrawRotaGraph(490 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_item_image[1], TRUE, FALSE);
-
+       if (i == 3)DrawRotaGraph(490 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_hammer, TRUE, FALSE);
        if(i == g_uicursorx)DrawRotaGraph(490 + (150 * i), 660, 3.3, M_PI / 180 * 0, g_cursor_image, TRUE, FALSE);
     }
 }
@@ -313,7 +315,7 @@ void Sousa(void)
         if (g_uicursor == FALSE)
         {
             if (g_uicursorx > 0)g_uicursorx--;
-            else g_uicursorx = 2;
+            else g_uicursorx = 3;
             g_uicursor = TRUE;
         }
     }
@@ -321,7 +323,7 @@ void Sousa(void)
     {
         if (g_uicursor == FALSE)
         {
-            if (g_uicursorx < 2)g_uicursorx++;
+            if (g_uicursorx < 3)g_uicursorx++;
             else g_uicursorx = g_uicursorx = 0;
             g_uicursor = TRUE;
         }
@@ -596,6 +598,7 @@ int LoadImages()
     if ((g_white_image = LoadGraph("images/white.png")) == -1) return -1;
     //if ((g_jump_image = LoadGraph("images/jump.png")) == -1) return -1;
     if ((g_haikei_image = LoadGraph("images/haikei.jpg")) == -1) return -1;
+    if ((g_hammer = LoadGraph("images/nc221978.png")) == -1)return -1;
 
     if (LoadDivGraph("images/block/ddd.png", 12, 12, 1, 30, 30, g_block_image) == -1) return -1;
     if (LoadDivGraph("images/player/human.png", 4, 4, 1, 30, 60, g_player_image) == -1) return -1;
