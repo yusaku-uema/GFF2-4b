@@ -47,6 +47,7 @@ void GameMain::Init()
     PLAYER_MAP[g_playery / 30][g_playerx / 30] = 1;
     PLAYER_MAP[(g_playery / 30) + 1][g_playerx / 30] = 1;
 }
+
 /***********************************************
 * UI
 ***********************************************/
@@ -194,6 +195,15 @@ void GameMain::Sousa(void)
             g_uicursor = TRUE;
         }
     }
+    for (int i = 0; i < MAP_HIGHT; i++)
+    {
+        for (int j = 0; j < MAP_WIDTH; j++)
+        {
+            PLAYER_MAP[i][j] = 0;
+        }
+    }
+    PLAYER_MAP[g_playery / 30][g_playerx / 30] = 1;
+    PLAYER_MAP[(g_playery / 30) + 1][g_playerx / 30] = 1;
 }
 
 void GameMain::Player()
