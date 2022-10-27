@@ -152,17 +152,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="character.cpp" />
+    <ClCompile Include="Cmain.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
-    <ClCompile Include="UI.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AbstractScene.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="GameMain.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="map.h" />
-    <ClInclude Include="UI.h" />
+    <ClInclude Include="SceneManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
