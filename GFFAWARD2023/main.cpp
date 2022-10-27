@@ -595,7 +595,9 @@ void Enemy()
 
   //  DrawFormatString(0, 500, 0xffffff, "x = %d", g_enemyy / 30);
     SetDrawArea(115, 0, 1165, 600);
-   DrawRotaGraph(115 + (g_enemyx + 15) - g_stage_x, g_enemyy + 30, 1.0, M_PI / 180 * 0, g_enemy_image[g_enemy_image_type], TRUE, g_Edirection);
+    if (Enemycheck == false) {
+        DrawRotaGraph(115 + (g_enemyx + 15) - g_stage_x, g_enemyy + 30, 1.0, M_PI / 180 * 0, g_enemy_image[g_enemy_image_type], TRUE, g_Edirection);
+    }
    SetDrawArea(0, 0, 1280, 720);
    A_check = false;//Aボタン押されたフラグを戻す
    if (time >= 10) {
