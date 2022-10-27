@@ -2,6 +2,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include"stdlib.h"
+#include"UI.h"
 
 #define MAP_HIGHT 20
 #define MAP_WIDTH 103
@@ -165,6 +166,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         Player();
         Enemy();
         UI();
+        ui.UIDraw();
+        ui.ClockNeedleMove();
 
         ScreenFlip();         //— ‰æ–Ê‚Ì“à—e‚ð•\‰æ–Ê‚É”½‰f
         if (GetJoypadInputState(DX_INPUT_PAD1)& PAD_INPUT_7){
@@ -220,7 +223,7 @@ void Stage()
             //DrawFormatString(14 * j, 14 * i, 0xffffff, "%d", MAP_DATA[i][j]);
             //DrawLine(0, 30 * i, MAP_WIDTH * 30, 30 * i, 0xffffff, TRUE);
             //DrawLine(30 * j, 0, 30 * j, MAP_HIGHT * 30, 0xffffff, TRUE);
-            PLAYER_MAP[i][j] = 0;
+           
         }
     }
 
@@ -594,6 +597,7 @@ int LoadImages()
     //if ((g_player_image = LoadGraph("images/human.png")) == -1) return -1;
     if ((g_cursor_image = LoadGraph("images/cursor mini.png")) == -1) return -1;
     if ((g_white_image = LoadGraph("images/white.png")) == -1) return -1;
+    if ((ui.img_clockneedle = LoadGraph("images/clock needle.png")) == -1)return-1;
     //if ((g_jump_image = LoadGraph("images/jump.png")) == -1) return -1;
     if ((g_haikei_image = LoadGraph("images/haikei.jpg")) == -1) return -1;
 
