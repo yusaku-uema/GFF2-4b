@@ -458,13 +458,13 @@ void Walk(void)
 
     if (HitBoxPlayer())
     {
-        g_playerx -= 20 * 30;
+        g_playerx -= 26 * 30;
 
 
         /*if (g_direction == FALSE)g_direction = TRUE;
         else g_direction = FALSE;*/
     }
-    if(HitBoxPlayer2())  g_playerx -= 20 * 30;;
+    if(HitBoxPlayer2())  g_playerx -= 26 * 30;;
 
 }
 
@@ -707,7 +707,7 @@ void Enemy2()
         else g_enemy2x = ((g_enemy2x + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
         g_enemy2y += 5; //ƒLƒƒƒ‰‚ð—Ž‚Æ‚·
     }
-    if (HitBoxPlayer())
+    if (HitBoxPlayer2())
     {
         if (g_Edirection2 == FALSE)
         {
