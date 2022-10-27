@@ -23,6 +23,10 @@ int g_cursor_image;
 int g_white_image;
 //int g_jump_image;
 int g_haikei_image;
+bool A_check = false; //Aボタン押されたか
+bool Enemycheck = false; //敵、TRUE停止中
+int time;
+int fps;
 
 int g_block_quantity =20;//ブロック個数
 
@@ -183,6 +187,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 ***********************************************/
 void UI(void)
 {
+    
     for (int i = 0; i < 4; i++)
     {
         DrawRotaGraph(490 + (150 * i), 660, 1.0, M_PI / 180 * 0, g_white_image, TRUE, FALSE);
@@ -382,7 +387,8 @@ void Player()
         }
     }
 
-    DrawFormatString(0, 500, 0xffffff, "x = %d", g_playery / 30);
+    //DrawFormatString(0, 500, 0xffffff, "x = %d", g_playery / 30);
+    DrawFormatString(0, 500, 0xffffff, "x = %d", time);
     DrawRotaGraph(115 + (g_playerx + 15) - g_stage_x, g_playery + 30, 1.0, M_PI / 180 * 0, g_player_image[g_player_image_type], TRUE, g_direction);
 }
 
@@ -497,8 +503,15 @@ void Jump(void)
 }
 void Enemy()
 {
-    
-    if (g_Edirection == FALSE)
+    if (Enemycheck == true) { 
+        g_enemy_speed = 0;
+        fps++;
+    }
+    if (Enemycheck == true && fps % 60 == 0) {  //fps 60 で一秒
+        time++;
+    }
+
+    if (g_Edirection == FALSE && Enemycheck == false)
     {
         g_enemy_hit_under_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][g_enemyx / BLOCK_WIDTH];
         g_enemy_hit_under_front = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
@@ -507,7 +520,7 @@ void Enemy()
         g_enemy_hit_lowerbody_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 1][g_enemyx / BLOCK_WIDTH];
         g_enemy_hit_upperbody_back = MAP_DATA[g_enemyy / BLOCK_WIDTH][g_enemyx / BLOCK_WIDTH];
     }
-    else
+    else if(g_Edirection == TRUE && Enemycheck == false)
     {
         g_enemy_hit_under_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
         g_enemy_hit_under_front = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][g_enemyx / BLOCK_WIDTH];
@@ -517,7 +530,7 @@ void Enemy()
         g_enemy_hit_upperbody_back = MAP_DATA[g_enemyy / BLOCK_WIDTH][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
     }
 
-        if (g_enemy_hit_under_back > 0 && g_enemy_hit_under_back < 10)
+    if (g_enemy_hit_under_back > 0 && g_enemy_hit_under_back < 10 && Enemycheck == false)
         {
             g_enemyy = (g_enemyy / BLOCK_WIDTH) * BLOCK_WIDTH; //プレイヤーのy座標を整える
 
@@ -532,7 +545,7 @@ void Enemy()
                 else  g_enemyx = ((g_enemyx / BLOCK_WIDTH) + 1) * BLOCK_WIDTH, g_Edirection = FALSE;
             }
         }
-        else
+        else if(Enemycheck == false)
         {
             if (g_direction == FALSE)g_enemyx = (g_enemyx / BLOCK_WIDTH) * BLOCK_WIDTH;  //キャラを穴の真ん中にする
             else g_enemyx = ((g_enemyx + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
@@ -540,7 +553,7 @@ void Enemy()
         }
         if (HitBoxPlayer())
         {
-            if (g_Edirection == FALSE)
+            if (g_Edirection == FALSE )
             {
                 g_Edirection = TRUE;
             }
@@ -565,29 +578,44 @@ void Enemy()
             g_enemy_time = 0;
             if (g_enemy_image_type >= 4)g_enemy_image_type = 0;
         }
+        if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_A) {
+            A_check = true;//Aボタン押されたか
+        }
 
-    DrawFormatString(0, 500, 0xffffff, "x = %d", g_enemyy / 30);
+        if (g_uicursorx == 3 && A_check == true) {
+            Enemycheck = true; //敵停止
+        }
+
+  //  DrawFormatString(0, 500, 0xffffff, "x = %d", g_enemyy / 30);
     SetDrawArea(115, 0, 1165, 600);
    DrawRotaGraph(115 + (g_enemyx + 15) - g_stage_x, g_enemyy + 30, 1.0, M_PI / 180 * 0, g_enemy_image[g_enemy_image_type], TRUE, g_Edirection);
    SetDrawArea(0, 0, 1280, 720);
+   A_check = false;//Aボタン押されたフラグを戻す
+   if (time >= 10) {
+       fps = 0;
+       time = 0;
+       Enemycheck = false;
+       g_enemy_speed = 1;
+   }
+   
 }
 int HitBoxPlayer() {
-    //x,yは中心座標とする
-    int sx1 = g_playerx;
-    int sy1 = g_playery;
-    int sx2 = sx1 + 30;
-    int sy2 = sy1 + 60;
+        //x,yは中心座標とする
+        int sx1 = g_playerx;
+        int sy1 = g_playery;
+        int sx2 = sx1 + 30;
+        int sy2 = sy1 + 60;
 
-    int dx1 = g_enemyx;
-    int dy1 = g_enemyy;
-    int dx2 = dx1 + 30;
-    int dy2 = dy1 + 60;
+        int dx1 = g_enemyx;
+        int dy1 = g_enemyy;
+        int dx2 = dx1 + 30;
+        int dy2 = dy1 + 60;
 
-    //短形が重なっていればあたり
-    if (sx1 < dx2 && dx1 < sx2 && sy1 < dy2 && dy1 < sy2) {
-        return TRUE;
-    }
-    return FALSE;
+        //短形が重なっていればあたり
+        if (sx1 < dx2 && dx1 < sx2 && sy1 < dy2 && dy1 < sy2 && Enemycheck == false) {
+            return TRUE;
+        }
+        return FALSE;
 }
 /***********************************************
 * 画像読み込み
