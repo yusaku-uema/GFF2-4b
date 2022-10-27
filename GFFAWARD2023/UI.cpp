@@ -2,7 +2,7 @@
 
 UI ui;
 
-UI::UI(){
+UI::UI() {
 	TimeLimit = 60;
 	Time = TimeLimit / 20;
 	x = 0;
@@ -13,13 +13,13 @@ int UI::ClockNeedleMove() {
 	Timer = GetNowCount() / 1000;
 
 	if (Timer % Time == 0) {
-		//Šp“xŽw’è¦DX_PI‚ÍDXƒ‰ƒCƒuƒ‰ƒŠ‚Å“o˜^‚³‚ê‚Ä‚é’è”‚ÅƒÎ(ƒ‰ƒWƒAƒ“‚Å180“x)‚ª’è‹`‚³‚ê‚Ä‚Ü‚·
+		
 		angle = Angle + (DX_PI / 6 * x);
 
-		//À•W‚ð‰ñ“]‚³‚¹‚é
+		
 		rotation2D(&X, &Y, 400, 100, 400, 300, angle);
 
-		//Šî€À•W‰ñ“]Šp“x‰ÁŽZ¦DX_TWO_PI‚ÍDXƒ‰ƒCƒuƒ‰ƒŠ‚Å“o˜^‚³‚ê‚Ä‚é’è”‚ÅƒÎ‚Ì“ñ”{(ƒ‰ƒWƒAƒ“‚Å360“x)‚ª’è‹`‚³‚ê‚Ä‚Ü‚·
+		
 		Angle += DX_TWO_PI / 720;
 		if (Angle > DX_TWO_PI)Angle -= DX_TWO_PI;
 	}
