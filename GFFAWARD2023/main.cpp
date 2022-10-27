@@ -86,7 +86,7 @@ int g_enemy_hit_under_back = 1;
 int g_enemy_hit_under_front = 1;
 bool g_Edirection = true; //false = 右向き　true = 左向き
 int g_enemy_image[4];
-int g_enemyx = 24 * 30;
+int g_enemyx = 68 * 30;
 int g_enemyy = 16 * 30;
 int g_enemy_hight = 60;
 int g_enemy_width = 30;
@@ -96,6 +96,25 @@ int g_enemy_image_type = 0;
 int g_enemyx_radius = 30 / 2;
 int g_enemyy_radius = 60 / 2;
 int g_enemy_time = 0;
+
+int g_enemy2_hit_lowerbody_front = 0; //プレイヤーが当たった障害物
+int g_enemy2_hit_upperbody_front = 0;
+int g_enemy2_hit_lowerbody_back = 0; //プレイヤーが当たった障害物
+int g_enemy2_hit_upperbody_back = 0;
+int g_enemy2_hit_under_back = 1;
+int g_enemy2_hit_under_front = 1;
+bool g_Edirection2 = true; //false = 右向き　true = 左向き
+int g_enemy2_image[4];
+int g_enemy2x = 68 * 30;
+int g_enemy2y = 12 * 30;
+int g_enemy2_hight = 60;
+int g_enemy2_width = 30;
+int g_enemy2_speed = 2;
+int g_enemy2_angle = 0;
+int g_enemy2_image_type = 0;
+int g_enemy2x_radius = 30 / 2;
+int g_enemy2y_radius = 60 / 2;
+int g_enemy2_time = 0;
 bool g_forcedtermination; //強制終了
 unsigned int MAP_DATA_INIT[MAP_HIGHT][MAP_WIDTH] = {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -131,11 +150,14 @@ void Player();  //自機操作
 void Stage();  //ステージ
 void  UI(void); //UI
 void Enemy(void); //敵
+void Enemy2(void); //敵
+void Enemy3(void); //敵
 void Sousa(void); // 操作
 void Jump(void); //ジャンプ
 void Walk(void);
 
 int HitBoxPlayer();
+int HitBoxPlayer2();
 /***********************************************
  * プログラム開始
  ***********************************************/
@@ -172,6 +194,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         Stage();
         Player();
         Enemy();
+        Enemy2();
         UI();
         ui.UIDraw();
         ui.ClockNeedleMove();
@@ -432,12 +455,13 @@ void Walk(void)
 
     if (HitBoxPlayer())
     {
-        g_playerx = 1 * 30;
-        g_playery = 16 * 30;
+        g_playerx -= 10 * 30;
+
 
         /*if (g_direction == FALSE)g_direction = TRUE;
         else g_direction = FALSE;*/
     }
+    if(HitBoxPlayer2());
 }
 
 void Jump(void)
@@ -571,8 +595,8 @@ void Enemy()
                 g_Edirection = FALSE;
             }
         }
-        if ((g_enemyx >= 27 * 30) && (g_Edirection == FALSE))g_Edirection = TRUE;//範囲指定
-        if ((g_enemyx <= 19 * 30) && (g_Edirection == TRUE))g_Edirection = FALSE;//範囲指定
+        if ((g_enemyx >= 68 * 30) && (g_Edirection == FALSE))g_Edirection = TRUE;//範囲指定
+        if ((g_enemyx <= 58 * 30) && (g_Edirection == TRUE))g_Edirection = FALSE;//範囲指定
         if ((g_enemyy / BLOCK_WIDTH) + 1 < MAP_HIGHT)
         {
             ENEMY_MAP[g_enemyy / BLOCK_WIDTH][g_enemyx / BLOCK_WIDTH] = 1;
@@ -629,6 +653,125 @@ int HitBoxPlayer() {
         }
         return FALSE;
 }
+void Enemy2()
+{
+    if (Enemycheck == true) {
+        g_enemy2_speed = 0;
+        fps++;
+    }
+    if (Enemycheck == true && fps % 60 == 0) {  //fps 60 で一秒
+        time++;
+    }
+
+    if (g_Edirection2 == FALSE && Enemycheck == false)
+    {
+        g_enemy2_hit_under_back = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 2][g_enemy2x / BLOCK_WIDTH];
+        g_enemy2_hit_under_front = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 2][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
+        g_enemy2_hit_lowerbody_front = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 1][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+        g_enemy2_hit_upperbody_front = MAP_DATA[g_enemy2y / BLOCK_WIDTH][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+        g_enemy2_hit_lowerbody_back = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 1][g_enemy2x / BLOCK_WIDTH];
+        g_enemy2_hit_upperbody_back = MAP_DATA[g_enemy2y / BLOCK_WIDTH][g_enemy2x / BLOCK_WIDTH];
+    }
+    else if (g_Edirection2 == TRUE && Enemycheck == false)
+    {
+        g_enemy2_hit_under_back = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 2][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
+        g_enemy2_hit_under_front = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 2][g_enemy2x / BLOCK_WIDTH];
+        g_enemy2_hit_lowerbody_front = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 1][g_enemy2x / BLOCK_WIDTH];
+        g_enemy2_hit_upperbody_front = MAP_DATA[g_enemy2y / BLOCK_WIDTH][g_enemy2x / BLOCK_WIDTH];
+        g_enemy2_hit_lowerbody_back = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 1][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+        g_enemy2_hit_upperbody_back = MAP_DATA[g_enemy2y / BLOCK_WIDTH][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+    }
+
+    if (g_enemy2_hit_under_back > 0 && g_enemy2_hit_under_back < 10 && Enemycheck == false)
+    {
+        g_enemy2y = (g_enemy2y / BLOCK_WIDTH) * BLOCK_WIDTH; //プレイヤーのy座標を整える
+
+        if ((g_enemy2_hit_lowerbody_front == 0 || g_enemy2_hit_lowerbody_front >= g_block_quantity) && (g_enemy2_hit_upperbody_front == 0 || g_enemy2_hit_upperbody_front >= g_block_quantity))
+        {
+            if (g_Edirection2 == FALSE)g_enemy2x += g_enemy2_speed; //障害物に当たってなかったら進む
+            else g_enemy2x -= g_enemy2_speed;
+        }
+        else
+        {
+            if (g_Edirection2 == FALSE)g_enemy2x = (g_enemy2x / BLOCK_WIDTH) * BLOCK_WIDTH, g_Edirection2 = TRUE; //プレイヤーがめり込んでるかもしれないからx座標を調整する
+            else  g_enemy2x = ((g_enemy2x / BLOCK_WIDTH) + 1) * BLOCK_WIDTH, g_Edirection2 = FALSE;
+        }
+    }
+    else if (Enemycheck == false)
+    {
+        if (g_direction == FALSE)g_enemy2x = (g_enemy2x / BLOCK_WIDTH) * BLOCK_WIDTH;  //キャラを穴の真ん中にする
+        else g_enemy2x = ((g_enemy2x + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
+        g_enemy2y += 5; //キャラを落とす
+    }
+    if (HitBoxPlayer())
+    {
+        if (g_Edirection2 == FALSE)
+        {
+            g_Edirection2 = TRUE;
+        }
+        else
+        {
+            g_Edirection2 = FALSE;
+        }
+    }
+    if ((g_enemy2x >= 68 * 30) && (g_Edirection2 == FALSE))g_Edirection2 = TRUE;//範囲指定
+    if ((g_enemy2x <= 58 * 30) && (g_Edirection2 == TRUE))g_Edirection2 = FALSE;//範囲指定
+    if ((g_enemy2y / BLOCK_WIDTH) + 1 < MAP_HIGHT)
+    {
+        ENEMY_MAP[g_enemy2y / BLOCK_WIDTH][g_enemy2x / BLOCK_WIDTH] = 1;
+        ENEMY_MAP[(g_enemy2y / BLOCK_WIDTH) + 1][g_enemy2x / BLOCK_WIDTH] = 1;
+        ENEMY_MAP[g_enemy2y / BLOCK_WIDTH][g_enemy2x / BLOCK_WIDTH + 1] = 2;
+        ENEMY_MAP[(g_enemy2y / BLOCK_WIDTH) + 1][g_enemy2x / BLOCK_WIDTH + 1] = 2;
+    }
+
+    g_enemy2_time++;
+    if (g_enemy2_time >= 8)
+    {
+        g_enemy2_image_type++;
+        g_enemy2_time = 0;
+        if (g_enemy2_image_type >= 4)g_enemy2_image_type = 0;
+    }
+    if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_A) {
+        A_check = true;//Aボタン押されたか
+    }
+
+    if (g_uicursorx == 3 && A_check == true) {
+        Enemycheck = true; //敵停止
+    }
+
+    //  DrawFormatString(0, 500, 0xffffff, "x = %d", g_enemy2y / 30);
+    SetDrawArea(115, 0, 1165, 600);
+    if (Enemycheck == false) {
+        DrawRotaGraph(115 + (g_enemy2x + 15) - g_stage_x, g_enemy2y + 30, 1.0, M_PI / 180 * 0, g_enemy2_image[g_enemy2_image_type], TRUE, g_Edirection2);
+    }
+    SetDrawArea(0, 0, 1280, 720);
+    A_check = false;//Aボタン押されたフラグを戻す
+    if (time >= 3) {
+        fps = 0;
+        time = 0;
+        Enemycheck = false;
+        g_enemy2_speed = 1;
+    }
+
+}
+int HitBoxPlayer2() {
+    //x,yは中心座標とする
+    int sx1 = g_playerx;
+    int sy1 = g_playery;
+    int sx2 = sx1 + 30;
+    int sy2 = sy1 + 60;
+
+    int dx1 = g_enemy2x;
+    int dy1 = g_enemy2y;
+    int dx2 = dx1 + 30;
+    int dy2 = dy1 + 60;
+
+    //短形が重なっていればあたり
+    if (sx1 < dx2 && dx1 < sx2 && sy1 < dy2 && dy1 < sy2 && Enemycheck == false) {
+        return TRUE;
+    }
+    return FALSE;
+}
 /***********************************************
 * 画像読み込み
 ***********************************************/
@@ -645,6 +788,7 @@ int LoadImages()
     if (LoadDivGraph("images/block/ddd.png", 12, 12, 1, 30, 30, g_block_image) == -1) return -1;
     if (LoadDivGraph("images/player/human.png", 4, 4, 1, 30, 60, g_player_image) == -1) return -1;
     if (LoadDivGraph("images/hone1.png", 4, 4, 1, 30, 60, g_enemy_image) == -1) return -1;
+    if (LoadDivGraph("images/hone1.png", 4, 4, 1, 30, 60, g_enemy2_image) == -1) return -1;
     if (LoadDivGraph("images/item.png", 2, 2, 1, 30, 30, g_item_image) == -1) return -1;
 
 }
