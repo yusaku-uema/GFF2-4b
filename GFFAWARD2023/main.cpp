@@ -76,6 +76,8 @@ int g_playery_radius = 60 / 2;
 
 int g_EnemyImage[4];
 
+int g_stage_item_quantity = 4;
+
 int g_enemy_hit_lowerbody_front = 0; //プレイヤーが当たった障害物
 int g_enemy_hit_upperbody_front = 0;
 int g_enemy_hit_lowerbody_back = 0; //プレイヤーが当たった障害物
@@ -190,15 +192,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 ***********************************************/
 void UI(void)
 {
+    int a = (1280 - (150 * (g_stage_item_quantity - 1))) / 2;
     
     for (int i = 0; i < 4; i++)
     {
-        DrawRotaGraph(490 + (150 * i), 660, 1.0, M_PI / 180 * 0, g_white_image, TRUE, FALSE);
-       if(i == 1) DrawRotaGraph(490 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_item_image[0], TRUE, FALSE);
-       if (i == 0) DrawRotaGraph(490 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_block_image[1], TRUE, FALSE);
-       if (i == 2) DrawRotaGraph(490 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_item_image[1], TRUE, FALSE);
-       if (i == 3)DrawRotaGraph(490 + (150 * i), 660, 3.0, M_PI / 180 * 0, g_hammer, TRUE, FALSE);
-       if(i == g_uicursorx)DrawRotaGraph(490 + (150 * i), 660, 3.3, M_PI / 180 * 0, g_cursor_image, TRUE, FALSE);
+        DrawRotaGraph(a + (150 * i), 660, 1.0, M_PI / 180 * 0, g_white_image, TRUE, FALSE);
+       if(i == 1) DrawRotaGraph(a + (150 * i), 660, 3.0, M_PI / 180 * 0, g_item_image[0], TRUE, FALSE);
+       if (i == 0) DrawRotaGraph(a + (150 * i), 660, 3.0, M_PI / 180 * 0, g_block_image[1], TRUE, FALSE);
+       if (i == 2) DrawRotaGraph(a + (150 * i), 660, 3.0, M_PI / 180 * 0, g_item_image[1], TRUE, FALSE);
+       if (i == 3)DrawRotaGraph(a + (150 * i), 660, 3.0, M_PI / 180 * 0, g_hammer, TRUE, FALSE);
+       if(i == g_uicursorx)DrawRotaGraph(a + (150 * i), 660, 3.3, M_PI / 180 * 0, g_cursor_image, TRUE, FALSE);
     }
 }
 
@@ -323,7 +326,7 @@ void Sousa(void)
         if (g_uicursor == FALSE)
         {
             if (g_uicursorx > 0)g_uicursorx--;
-            else g_uicursorx = 3;
+            else g_uicursorx = g_stage_item_quantity - 1;
             g_uicursor = TRUE;
         }
     }
@@ -331,7 +334,7 @@ void Sousa(void)
     {
         if (g_uicursor == FALSE)
         {
-            if (g_uicursorx < 3)g_uicursorx++;
+            if (g_uicursorx < g_stage_item_quantity - 1)g_uicursorx++;
             else g_uicursorx = g_uicursorx = 0;
             g_uicursor = TRUE;
         }
