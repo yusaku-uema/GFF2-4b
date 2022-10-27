@@ -603,7 +603,7 @@ void Enemy()
     }
    SetDrawArea(0, 0, 1280, 720);
    A_check = false;//Aボタン押されたフラグを戻す
-   if (time >= 10) {
+   if (time >= 3) {
        fps = 0;
        time = 0;
        Enemycheck = false;
