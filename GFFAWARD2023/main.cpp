@@ -497,6 +497,7 @@ void Jump(void)
 }
 void Enemy()
 {
+    
     if (g_Edirection == FALSE)
     {
         g_enemy_hit_under_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][g_enemyx / BLOCK_WIDTH];
