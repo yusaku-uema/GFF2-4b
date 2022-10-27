@@ -552,7 +552,8 @@ void Enemy()
                 g_Edirection = FALSE;
             }
         }
-
+        if ((g_enemyx >= 27 * 30) && (g_Edirection == FALSE))g_Edirection = TRUE;//”ÍˆÍŽw’è
+        if ((g_enemyx <= 19 * 30) && (g_Edirection == TRUE))g_Edirection = FALSE;//”ÍˆÍŽw’è
         if ((g_enemyy / BLOCK_WIDTH) + 1 < MAP_HIGHT)
         {
             ENEMY_MAP[g_enemyy / BLOCK_WIDTH][g_enemyx / BLOCK_WIDTH] = 1;
