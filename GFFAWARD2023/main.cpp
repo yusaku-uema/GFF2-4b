@@ -455,13 +455,14 @@ void Walk(void)
 
     if (HitBoxPlayer())
     {
-        g_playerx -= 10 * 30;
+        g_playerx -= 20 * 30;
 
 
         /*if (g_direction == FALSE)g_direction = TRUE;
         else g_direction = FALSE;*/
     }
-    if(HitBoxPlayer2());
+    if(HitBoxPlayer2())  g_playerx -= 20 * 30;;
+
 }
 
 void Jump(void)
