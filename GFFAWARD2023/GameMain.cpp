@@ -11,12 +11,13 @@ GameMain::GameMain()
     if (LoadDivGraph("images/player/human.png", 4, 4, 1, 30, 60, g_player_image) == -1);
     if (LoadDivGraph("images/hone1.png", 4, 4, 1, 30, 60, g_enemy_image) == -1) ;
     if (LoadDivGraph("images/item.png", 2, 2, 1, 30, 30, g_item_image) == -1);
+
+    Init();
 }
 
 
 AbstractScene* GameMain::Update()
 {
-    Init();
     Scroll();
     Sousa();
     Player();
