@@ -219,7 +219,7 @@ void Stage()
 
             
 
-
+            PLAYER_MAP[i][j] = 0;
             //DrawFormatString(14 * j, 14 * i, 0xffffff, "%d", MAP_DATA[i][j]);
             //DrawLine(0, 30 * i, MAP_WIDTH * 30, 30 * i, 0xffffff, TRUE);
             //DrawLine(30 * j, 0, 30 * j, MAP_HIGHT * 30, 0xffffff, TRUE);
@@ -421,8 +421,11 @@ void Walk(void)
 
     if (HitBoxPlayer())
     {
-        if (g_direction == FALSE)g_direction = TRUE;
-        else g_direction = FALSE;
+        g_playerx = 1 * 30;
+        g_playery = 16 * 30;
+
+        /*if (g_direction == FALSE)g_direction = TRUE;
+        else g_direction = FALSE;*/
     }
 }
 
