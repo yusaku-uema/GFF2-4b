@@ -540,34 +540,36 @@ void Jump(void)
 }
 void Enemy()
 {
-    if (Enemycheck == true) { 
-        g_enemy_speed = 0;
-        fps++;
-    }
-    if (Enemycheck == true && fps % 60 == 0) {  //fps 60 で一秒
-        time++;
-    }
-
-    if (g_Edirection == FALSE && Enemycheck == false)
+    if (g_stage_scroll == FALSE)
     {
-        g_enemy_hit_under_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][g_enemyx / BLOCK_WIDTH];
-        g_enemy_hit_under_front = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
-        g_enemy_hit_lowerbody_front = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 1][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
-        g_enemy_hit_upperbody_front = MAP_DATA[g_enemyy / BLOCK_WIDTH][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
-        g_enemy_hit_lowerbody_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 1][g_enemyx / BLOCK_WIDTH];
-        g_enemy_hit_upperbody_back = MAP_DATA[g_enemyy / BLOCK_WIDTH][g_enemyx / BLOCK_WIDTH];
-    }
-    else if(g_Edirection == TRUE && Enemycheck == false)
-    {
-        g_enemy_hit_under_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
-        g_enemy_hit_under_front = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][g_enemyx / BLOCK_WIDTH];
-        g_enemy_hit_lowerbody_front = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 1][g_enemyx / BLOCK_WIDTH];
-        g_enemy_hit_upperbody_front = MAP_DATA[g_enemyy / BLOCK_WIDTH][g_enemyx / BLOCK_WIDTH];
-        g_enemy_hit_lowerbody_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 1][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
-        g_enemy_hit_upperbody_back = MAP_DATA[g_enemyy / BLOCK_WIDTH][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
-    }
+        if (Enemycheck == true) {
+            g_enemy_speed = 0;
+            fps++;
+        }
+        if (Enemycheck == true && fps % 60 == 0) {  //fps 60 で一秒
+            time++;
+        }
 
-    if (g_enemy_hit_under_back > 0 && g_enemy_hit_under_back < 10 && Enemycheck == false)
+        if (g_Edirection == FALSE && Enemycheck == false)
+        {
+            g_enemy_hit_under_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][g_enemyx / BLOCK_WIDTH];
+            g_enemy_hit_under_front = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
+            g_enemy_hit_lowerbody_front = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 1][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+            g_enemy_hit_upperbody_front = MAP_DATA[g_enemyy / BLOCK_WIDTH][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+            g_enemy_hit_lowerbody_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 1][g_enemyx / BLOCK_WIDTH];
+            g_enemy_hit_upperbody_back = MAP_DATA[g_enemyy / BLOCK_WIDTH][g_enemyx / BLOCK_WIDTH];
+        }
+        else if (g_Edirection == TRUE && Enemycheck == false)
+        {
+            g_enemy_hit_under_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
+            g_enemy_hit_under_front = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 2][g_enemyx / BLOCK_WIDTH];
+            g_enemy_hit_lowerbody_front = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 1][g_enemyx / BLOCK_WIDTH];
+            g_enemy_hit_upperbody_front = MAP_DATA[g_enemyy / BLOCK_WIDTH][g_enemyx / BLOCK_WIDTH];
+            g_enemy_hit_lowerbody_back = MAP_DATA[(g_enemyy / BLOCK_WIDTH) + 1][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+            g_enemy_hit_upperbody_back = MAP_DATA[g_enemyy / BLOCK_WIDTH][(g_enemyx + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+        }
+
+        if (g_enemy_hit_under_back > 0 && g_enemy_hit_under_back < 10 && Enemycheck == false)
         {
             g_enemyy = (g_enemyy / BLOCK_WIDTH) * BLOCK_WIDTH; //プレイヤーのy座標を整える
 
@@ -582,7 +584,7 @@ void Enemy()
                 else  g_enemyx = ((g_enemyx / BLOCK_WIDTH) + 1) * BLOCK_WIDTH, g_Edirection = FALSE;
             }
         }
-        else if(Enemycheck == false)
+        else if (Enemycheck == false)
         {
             if (g_direction == FALSE)g_enemyx = (g_enemyx / BLOCK_WIDTH) * BLOCK_WIDTH;  //キャラを穴の真ん中にする
             else g_enemyx = ((g_enemyx + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
@@ -590,7 +592,7 @@ void Enemy()
         }
         if (HitBoxPlayer())
         {
-            if (g_Edirection == FALSE )
+            if (g_Edirection == FALSE)
             {
                 g_Edirection = TRUE;
             }
@@ -623,6 +625,8 @@ void Enemy()
         if (g_uicursorx == 3 && A_check == true) {
             Enemycheck = true; //敵停止
         }
+    }
+
 
   //  DrawFormatString(0, 500, 0xffffff, "x = %d", g_enemyy / 30);
     SetDrawArea(115, 0, 1165, 600);
@@ -659,90 +663,92 @@ int HitBoxPlayer() {
 }
 void Enemy2()
 {
-    if (Enemycheck1 == true) {
-        g_enemy2_speed = 0;
-        fps1++;
-    }
-    if (Enemycheck1 == true && fps1 % 60 == 0) {  //fps 60 で一秒
-        time1++;
-    }
-
-    if (g_Edirection2 == FALSE && Enemycheck1 == false)
-    {
-        g_enemy2_hit_under_back = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 2][g_enemy2x / BLOCK_WIDTH];
-        g_enemy2_hit_under_front = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 2][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
-        g_enemy2_hit_lowerbody_front = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 1][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
-        g_enemy2_hit_upperbody_front = MAP_DATA[g_enemy2y / BLOCK_WIDTH][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
-        g_enemy2_hit_lowerbody_back = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 1][g_enemy2x / BLOCK_WIDTH];
-        g_enemy2_hit_upperbody_back = MAP_DATA[g_enemy2y / BLOCK_WIDTH][g_enemy2x / BLOCK_WIDTH];
-    }
-    else if (g_Edirection2 == TRUE && Enemycheck1 == false)
-    {
-        g_enemy2_hit_under_back = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 2][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
-        g_enemy2_hit_under_front = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 2][g_enemy2x / BLOCK_WIDTH];
-        g_enemy2_hit_lowerbody_front = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 1][g_enemy2x / BLOCK_WIDTH];
-        g_enemy2_hit_upperbody_front = MAP_DATA[g_enemy2y / BLOCK_WIDTH][g_enemy2x / BLOCK_WIDTH];
-        g_enemy2_hit_lowerbody_back = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 1][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
-        g_enemy2_hit_upperbody_back = MAP_DATA[g_enemy2y / BLOCK_WIDTH][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
-    }
-
-    if (g_enemy2_hit_under_back > 0 && g_enemy2_hit_under_back < 10 && Enemycheck1 == false)
-    {
-        g_enemy2y = (g_enemy2y / BLOCK_WIDTH) * BLOCK_WIDTH; //プレイヤーのy座標を整える
-
-        if ((g_enemy2_hit_lowerbody_front == 0 || g_enemy2_hit_lowerbody_front >= g_block_quantity) && (g_enemy2_hit_upperbody_front == 0 || g_enemy2_hit_upperbody_front >= g_block_quantity))
-        {
-            if (g_Edirection2 == FALSE)g_enemy2x += g_enemy2_speed; //障害物に当たってなかったら進む
-            else g_enemy2x -= g_enemy2_speed;
+    if (g_stage_scroll == FALSE) {
+        if (Enemycheck1 == true) {
+            g_enemy2_speed = 0;
+            fps1++;
         }
-        else
-        {
-            if (g_Edirection2 == FALSE)g_enemy2x = (g_enemy2x / BLOCK_WIDTH) * BLOCK_WIDTH, g_Edirection2 = TRUE; //プレイヤーがめり込んでるかもしれないからx座標を調整する
-            else  g_enemy2x = ((g_enemy2x / BLOCK_WIDTH) + 1) * BLOCK_WIDTH, g_Edirection2 = FALSE;
+        if (Enemycheck1 == true && fps1 % 60 == 0) {  //fps 60 で一秒
+            time1++;
         }
-    }
-    else if (Enemycheck1 == false)
-    {
-        if (g_direction == FALSE)g_enemy2x = (g_enemy2x / BLOCK_WIDTH) * BLOCK_WIDTH;  //キャラを穴の真ん中にする
-        else g_enemy2x = ((g_enemy2x + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
-        g_enemy2y += 5; //キャラを落とす
-    }
-    if (HitBoxPlayer2())
-    {
-        if (g_Edirection2 == FALSE)
+
+        if (g_Edirection2 == FALSE && Enemycheck1 == false)
         {
-            g_Edirection2 = TRUE;
+            g_enemy2_hit_under_back = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 2][g_enemy2x / BLOCK_WIDTH];
+            g_enemy2_hit_under_front = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 2][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
+            g_enemy2_hit_lowerbody_front = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 1][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+            g_enemy2_hit_upperbody_front = MAP_DATA[g_enemy2y / BLOCK_WIDTH][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+            g_enemy2_hit_lowerbody_back = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 1][g_enemy2x / BLOCK_WIDTH];
+            g_enemy2_hit_upperbody_back = MAP_DATA[g_enemy2y / BLOCK_WIDTH][g_enemy2x / BLOCK_WIDTH];
         }
-        else
+        else if (g_Edirection2 == TRUE && Enemycheck1 == false)
         {
-            g_Edirection2 = FALSE;
+            g_enemy2_hit_under_back = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 2][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];//足元が穴じゃなければ
+            g_enemy2_hit_under_front = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 2][g_enemy2x / BLOCK_WIDTH];
+            g_enemy2_hit_lowerbody_front = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 1][g_enemy2x / BLOCK_WIDTH];
+            g_enemy2_hit_upperbody_front = MAP_DATA[g_enemy2y / BLOCK_WIDTH][g_enemy2x / BLOCK_WIDTH];
+            g_enemy2_hit_lowerbody_back = MAP_DATA[(g_enemy2y / BLOCK_WIDTH) + 1][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
+            g_enemy2_hit_upperbody_back = MAP_DATA[g_enemy2y / BLOCK_WIDTH][(g_enemy2x + (BLOCK_WIDTH - 1)) / BLOCK_WIDTH];
         }
-    }
-    if ((g_enemy2x >= 68 * 30) && (g_Edirection2 == FALSE))g_Edirection2 = TRUE;//範囲指定
-    if ((g_enemy2x <= 58 * 30) && (g_Edirection2 == TRUE))g_Edirection2 = FALSE;//範囲指定
-    if ((g_enemy2y / BLOCK_WIDTH) + 1 < MAP_HIGHT)
-    {
-        ENEMY_MAP[g_enemy2y / BLOCK_WIDTH][g_enemy2x / BLOCK_WIDTH] = 1;
-        ENEMY_MAP[(g_enemy2y / BLOCK_WIDTH) + 1][g_enemy2x / BLOCK_WIDTH] = 1;
-        ENEMY_MAP[g_enemy2y / BLOCK_WIDTH][g_enemy2x / BLOCK_WIDTH + 1] = 2;
-        ENEMY_MAP[(g_enemy2y / BLOCK_WIDTH) + 1][g_enemy2x / BLOCK_WIDTH + 1] = 2;
-    }
 
-    g_enemy2_time++;
-    if (g_enemy2_time >= 8)
-    {
-        g_enemy2_image_type++;
-        g_enemy2_time = 0;
-        if (g_enemy2_image_type >= 4)g_enemy2_image_type = 0;
-    }
-    if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_A) {
-        A_check1 = true;//Aボタン押されたか
-    }
+        if (g_enemy2_hit_under_back > 0 && g_enemy2_hit_under_back < 10 && Enemycheck1 == false)
+        {
+            g_enemy2y = (g_enemy2y / BLOCK_WIDTH) * BLOCK_WIDTH; //プレイヤーのy座標を整える
 
-    if (g_uicursorx == 3 && A_check1 == true) {
-        Enemycheck1 = true; //敵停止
-    }
+            if ((g_enemy2_hit_lowerbody_front == 0 || g_enemy2_hit_lowerbody_front >= g_block_quantity) && (g_enemy2_hit_upperbody_front == 0 || g_enemy2_hit_upperbody_front >= g_block_quantity))
+            {
+                if (g_Edirection2 == FALSE)g_enemy2x += g_enemy2_speed; //障害物に当たってなかったら進む
+                else g_enemy2x -= g_enemy2_speed;
+            }
+            else
+            {
+                if (g_Edirection2 == FALSE)g_enemy2x = (g_enemy2x / BLOCK_WIDTH) * BLOCK_WIDTH, g_Edirection2 = TRUE; //プレイヤーがめり込んでるかもしれないからx座標を調整する
+                else  g_enemy2x = ((g_enemy2x / BLOCK_WIDTH) + 1) * BLOCK_WIDTH, g_Edirection2 = FALSE;
+            }
+        }
+        else if (Enemycheck1 == false)
+        {
+            if (g_direction == FALSE)g_enemy2x = (g_enemy2x / BLOCK_WIDTH) * BLOCK_WIDTH;  //キャラを穴の真ん中にする
+            else g_enemy2x = ((g_enemy2x + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
+            g_enemy2y += 5; //キャラを落とす
+        }
+        if (HitBoxPlayer2())
+        {
+            if (g_Edirection2 == FALSE)
+            {
+                g_Edirection2 = TRUE;
+            }
+            else
+            {
+                g_Edirection2 = FALSE;
+            }
+        }
+        if ((g_enemy2x >= 68 * 30) && (g_Edirection2 == FALSE))g_Edirection2 = TRUE;//範囲指定
+        if ((g_enemy2x <= 58 * 30) && (g_Edirection2 == TRUE))g_Edirection2 = FALSE;//範囲指定
+        if ((g_enemy2y / BLOCK_WIDTH) + 1 < MAP_HIGHT)
+        {
+            ENEMY_MAP[g_enemy2y / BLOCK_WIDTH][g_enemy2x / BLOCK_WIDTH] = 1;
+            ENEMY_MAP[(g_enemy2y / BLOCK_WIDTH) + 1][g_enemy2x / BLOCK_WIDTH] = 1;
+            ENEMY_MAP[g_enemy2y / BLOCK_WIDTH][g_enemy2x / BLOCK_WIDTH + 1] = 2;
+            ENEMY_MAP[(g_enemy2y / BLOCK_WIDTH) + 1][g_enemy2x / BLOCK_WIDTH + 1] = 2;
+        }
 
+        g_enemy2_time++;
+        if (g_enemy2_time >= 8)
+        {
+            g_enemy2_image_type++;
+            g_enemy2_time = 0;
+            if (g_enemy2_image_type >= 4)g_enemy2_image_type = 0;
+        }
+        if (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_A) {
+            A_check1 = true;//Aボタン押されたか
+        }
+
+        if (g_uicursorx == 3 && A_check1 == true) {
+            Enemycheck1 = true; //敵停止
+        }
+
+    }
     //  DrawFormatString(0, 500, 0xffffff, "x = %d", g_enemy2y / 30);
     SetDrawArea(115, 0, 1165, 600);
     if (Enemycheck1 == false) {
