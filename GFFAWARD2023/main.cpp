@@ -440,8 +440,8 @@ void Walk(void)
             if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;
             else  g_playerx = ((g_playerx / BLOCK_WIDTH) + 1) * BLOCK_WIDTH;
 
-            if ((MAP_DATA[(g_playery / BLOCK_WIDTH) + 1][(g_playerx + BLOCK_WIDTH) / BLOCK_WIDTH] == 0 || MAP_DATA[g_playery / BLOCK_WIDTH][(g_playerx + BLOCK_WIDTH) / BLOCK_WIDTH] > g_block_quantity) && g_direction == TRUE || //Œã‚ë‚ªáŠQ•¨‚¶‚á‚È‚©‚Á‚½‚ç
-                (MAP_DATA[(g_playery / BLOCK_WIDTH) + 1][(g_playerx - 1) / BLOCK_WIDTH] == 0 || MAP_DATA[g_playery / BLOCK_WIDTH][(g_playerx - 1) / BLOCK_WIDTH] > g_block_quantity) && g_direction == FALSE)
+            if ((MAP_DATA[(g_playery / BLOCK_WIDTH) + 1][(g_playerx + BLOCK_WIDTH) / BLOCK_WIDTH] == 0 || MAP_DATA[(g_playery / BLOCK_WIDTH) + 1][(g_playerx + BLOCK_WIDTH) / BLOCK_WIDTH] > g_block_quantity) && (MAP_DATA[(g_playery / BLOCK_WIDTH)][(g_playerx + BLOCK_WIDTH) / BLOCK_WIDTH] == 0 || MAP_DATA[g_playery / BLOCK_WIDTH][(g_playerx + BLOCK_WIDTH) / BLOCK_WIDTH] > g_block_quantity) && g_direction == TRUE || //Œã‚ë‚ªáŠQ•¨‚¶‚á‚È‚©‚Á‚½‚ç
+                (MAP_DATA[(g_playery / BLOCK_WIDTH) + 1][(g_playerx - 1) / BLOCK_WIDTH] == 0 || MAP_DATA[(g_playery / BLOCK_WIDTH) + 1][(g_playerx - 1) / BLOCK_WIDTH] > g_block_quantity) && (MAP_DATA[g_playery / BLOCK_WIDTH][(g_playerx - 1) / BLOCK_WIDTH] == 0 || MAP_DATA[g_playery / BLOCK_WIDTH][(g_playerx - 1) / BLOCK_WIDTH] > g_block_quantity) && g_direction == FALSE)
             {
                 if (g_direction == FALSE)g_direction = TRUE; //is•ûŒü‚ğ‹t‚É‚·‚é
                 else  g_direction = FALSE;
