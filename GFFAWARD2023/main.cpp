@@ -598,6 +598,9 @@ int LoadImages()
     if ((g_cursor_image = LoadGraph("images/cursor mini.png")) == -1) return -1;
     if ((g_white_image = LoadGraph("images/white.png")) == -1) return -1;
     if ((ui.img_clockneedle = LoadGraph("images/clock needle.png")) == -1)return-1;
+    if ((ui.img_clock = LoadGraph("images/clock2.png")) == -1)return-1;
+    if ((ui.img_sun = LoadGraph("images/sun.png")) == -1)return-1;
+    if ((ui.img_moon = LoadGraph("images/moon.png")) == -1)return-1;
     //if ((g_jump_image = LoadGraph("images/jump.png")) == -1) return -1;
     if ((g_haikei_image = LoadGraph("images/haikei.jpg")) == -1) return -1;
 
