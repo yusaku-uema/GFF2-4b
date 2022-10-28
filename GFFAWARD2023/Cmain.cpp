@@ -1,6 +1,6 @@
 //#include"DxLib.h"
 //#include"SceneManager.h"
-//#include"GameMain.h"
+//#include"Title.h"
 //
 ///***********************************************
 // * プログラムの開始
@@ -8,7 +8,7 @@
 //int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 //    LPSTR lpCmdLine, int nCmdShow) {
 //
-//    // タイトルを test に変更
+//     タイトルを test に変更
 //    SetMainWindowText("ゲーム");
 //    SetGraphMode(1280, 720, 16);  //画面サイズ
 //    ChangeWindowMode(TRUE);		// ウィンドウモードで起動
@@ -21,7 +21,7 @@
 //    SetFontSize(20);		// 文字サイズを設定
 //    try
 //    {
-//        sceneMng = new SceneManager((AbstractScene*)new GameMain());
+//        sceneMng = new SceneManager((AbstractScene*)new Title());
 //
 //    }
 //    catch (const char* err)
@@ -30,7 +30,7 @@
 //        return 0;
 //    }
 //
-//    // ゲームループ
+//     ゲームループ
 //    while (ProcessMessage() == 0 && sceneMng->Update() != nullptr) {
 //
 //        ClearDrawScreen();		// 画面の初期化
