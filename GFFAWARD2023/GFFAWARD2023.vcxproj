@@ -154,6 +154,7 @@
     <ClCompile Include="character.cpp" />
     <ClCompile Include="Cmain.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Title.cpp" />
