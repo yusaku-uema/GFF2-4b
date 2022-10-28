@@ -488,33 +488,36 @@ void Jump(void)
         g_playery = (sin(g_jump_angle * M_PI / 180) * 90) + g_jump_centery; //円を描くためのy座標を計算
         g_playerx = (cos(g_jump_angle * M_PI / 180) * 15) + g_jump_centerx; //円を描くためのx座標を計算
 
-        if(g_jump_angle >= 240 || g_jump_angle <= -60)
+        if ((g_jump_angle >= 360 || g_jump_angle <= -180) && g_jump == 1) //ブロックなどに当たらなかったら
         {
-            if ((g_player_hit_upperbody_front > 0 && g_player_hit_upperbody_front <= g_block_quantity) || (g_player_hit_lowerbody_front > 0 && g_player_hit_lowerbody_front <= g_block_quantity))
+            //g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH; //y座標を整える
+            g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH; //x座標を整える
+            g_jump = 0;
+            DrawFormatString(10, 10, 0xffffff, "02");
+        }
+
+        else if((g_jump_angle >= 240 || g_jump_angle <= -60) && g_jump == 1)
+        {
+
+            if ((g_jump_angle >= 270 || g_jump_angle <= -90) && g_jump == 1) //ジャンプして、落ち始めたら
             {
-                DrawFormatString(0, 0, 0xffffff, "afhsth");
+                if (g_player_hit_under_front > 0 && g_player_hit_under_front <= g_block_quantity)
+                {
+                    g_jump = 2;
+                    g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH; //プレイヤーのｙ座標を整える
+                    DrawFormatString(10, 10, 0xffffff, "01");
+                }
+            }
+
+            else if ((g_player_hit_upperbody_front > 0 && g_player_hit_upperbody_front <= g_block_quantity) || (g_player_hit_lowerbody_front > 0 && g_player_hit_lowerbody_front <= g_block_quantity))
+            {
                 if (g_direction == FALSE)g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH;
                 else g_playerx = ((g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH) * BLOCK_WIDTH;
                 g_jump = 0;
             }
         }
 
-        if ((g_jump_angle >= 270 || g_jump_angle <= -90) && g_jump > 0) //ジャンプして、落ち始めたら
-        {
-            if (g_player_hit_under_front > 0 && g_player_hit_under_front <= g_block_quantity)
-            {
-                g_jump = 2;
-                g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH; //プレイヤーのｙ座標を整える
-            }
-            else if (g_jump_angle >= 360 || g_jump_angle <= -180) //ブロックなどに当たらなかったら
-            {
-                g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH; //y座標を整える
-                g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH; //x座標を整える
-                g_jump = 0;
-            }
-        }
-
-        if ((g_player_hit_upperbody_back > 0 && g_player_hit_upperbody_back <= g_block_quantity) && g_jump > 0)
+        if ((g_player_hit_upperbody_back > 0 && g_player_hit_upperbody_back <= g_block_quantity) && g_jump == 1)
         {
             if (g_direction == FALSE)g_playerx = g_playerx / BLOCK_WIDTH * BLOCK_WIDTH;
             else g_playerx = (g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH * BLOCK_WIDTH;
