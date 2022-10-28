@@ -156,6 +156,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Title.cpp" />
     <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -165,6 +166,7 @@
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Title.h" />
     <ClInclude Include="UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
