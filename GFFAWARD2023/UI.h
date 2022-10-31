@@ -8,11 +8,12 @@
 class UI {
 public:
 	int Timer;
-	float TimeLimit;
+	int TimeLimit;
 	int Time;
 	float x;
 	int X, Y;
 	double Angle, angle;
+	bool flg;
 
 	int img_clockneedle;
 	int img_clock;
@@ -23,6 +24,7 @@ public:
 	int ClockNeedleMove();
 	int UIDraw();
 	void rotation2D(int* X, int* Y, int x, int y, int xc, int yc, double Angle);
+	int GameOver();
 };
 
 extern UI ui;

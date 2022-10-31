@@ -201,6 +201,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         UI();
         ui.UIDraw();
         ui.ClockNeedleMove();
+        /*ui.GameOver();*/
 
         ScreenFlip();         //— ‰æ–Ê‚Ì“à—e‚ð•\‰æ–Ê‚É”½‰f
         if (GetJoypadInputState(DX_INPUT_PAD1)& PAD_INPUT_7){
