@@ -403,7 +403,7 @@ void Player()
             else ((g_playerx + BLOCK_WIDTH - 1) / BLOCK_WIDTH)* BLOCK_WIDTH;
         }
 
-        if ((g_playery / BLOCK_WIDTH) + 1 < MAP_HIGHT)
+        if ((g_playery / BLOCK_WIDTH) + 1 < MAP_HIGHT && (g_playery / BLOCK_WIDTH) > 0)
         {
             PLAYER_MAP[g_playery / BLOCK_WIDTH][g_playerx / BLOCK_WIDTH] = 1;
             PLAYER_MAP[(g_playery / BLOCK_WIDTH) + 1][g_playerx / BLOCK_WIDTH] = 1;
@@ -491,7 +491,6 @@ void Jump(void)
 
         if ((g_jump_angle >= 360 || g_jump_angle <= -180) && g_jump == 1) //ブロックなどに当たらなかったら
         {
-            //g_playery = (g_playery / BLOCK_WIDTH) * BLOCK_WIDTH; //y座標を整える
             g_playerx = (g_playerx / BLOCK_WIDTH) * BLOCK_WIDTH; //x座標を整える
             g_jump = 0;
             DrawFormatString(10, 10, 0xffffff, "02");
